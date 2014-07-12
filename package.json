@@ -19,8 +19,27 @@
     "scripts": {},
     "dependencies": {
         "yeoman-generator": "~0.17.0",
+        "run-sequence": "*",
+        "MD5": "*",
+
         "gulp": "*",
-        "gulp-alloy-build": "*"
+
+        "gulp-clean": "*",
+        "gulp-concat": "*",
+        "gulp-rename": "*",
+        "gulp-replace": "*",
+        "gulp-savefile": "*",
+        "gulp-header": "*",
+
+        "gulp-uglify": "*",
+        "gulp-minify-css": "*",
+        "gulp-minify-html": "*",
+        "gulp-imagemin": "*",
+
+        "gulp-usemin": "*",
+        "gulp-compass": "*",
+        "gulp-zip": "*",
+        "gulp-watch": "*"
     },
     "peerDependencies": {
         "yo": ">=1.2.0"
