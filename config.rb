@@ -4,7 +4,6 @@
 Encoding.default_external = "utf-8"
 
 dist_root = "dist/"
-
 http_images_path = "../../img"
 http_generated_images_path = "../../img/sprite"
 generated_images_dir = dist_root + "img/sprite"

@@ -1,5 +1,5 @@
 // for compiler
 
-function _url(uri) {
+function _urlrev(uri) {
     return uri;
 };
