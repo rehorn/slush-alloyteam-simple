@@ -1,5 +1,5 @@
 {
-    "name": "<%= projectName %>",
+    "name": "<%= name %>",
     "version": "0.1.0",
     "description": "Alloyteam Simple Web Apps - By Yeoman generator-alloyteam-simple",
     "keywords": [

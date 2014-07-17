@@ -1,9 +1,9 @@
-generator-alloyteam-simple
+slush-alloyteam-simple
 ==========================
 
-alloyteam simple project template generator base on yeoman generator
+Alloyteam Simple Web Apps generator base on slush & glup 
 
-alloyteam web 前端项目工程化模板
+Alloyteam web 前端项目工程化模板
 
 ### 特性
 1. 基于 gulp 进行构建，方便快捷，易于定制和插件支持
@@ -19,8 +19,9 @@ alloyteam web 前端项目工程化模板
 7. [工程化集成] 通过 task 调用 alloydist 提供 rest 借口，轻松实现命令行部署测试环境、正式环境、离线包发布等
 
 ### 依赖
-1. nodejs
-2. compass (ruby)
+1. [ruby](https://www.ruby-lang.org/) & [compass](http://compass-style.org/)
+2. [nodejs](http://nodejs.org/)
+3. [gulp](https://github.com/gulpjs/gulp/) & [slush](https://github.com/slushjs/slush)
 
 ### 安装
 1. 安装 ruby，参考 https://www.ruby-lang.org/en/installation/
@@ -29,8 +30,17 @@ alloyteam web 前端项目工程化模板
 gem install compass
 ```
 3. 安装 nodejs，参考 http://nodejs.org/
-4. 安装 yeoman、gulp
+4. 安装 gulp slush slush-alloyteam-simple
 ```shell
-npm install -g yo gulp
+npm install -g gulp slush slush-alloyteam-simple
 ```
-5. 使用 yeoman 生成模板
+5. 创建项目目录
+```shell
+mkdir alloyteam-webapp
+cd alloyteam-webapp
+```
+6. 初始化项目
+```shell
+slush alloyteam-simple
+```
+
