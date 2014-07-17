@@ -1,9 +1,5 @@
 define([
-    './pro/scrollfix',
-    './pro/tab',
-    './pro/dialog',
-    './pro/spinner',
-    './pro/carousel'
+    './pro/scrollfix'
 ],function ($) {
     return $;
 });
