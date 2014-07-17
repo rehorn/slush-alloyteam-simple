@@ -1,5 +1,5 @@
 {
-    "name": "<%= name %>",
+    "name": "alloyteam-simple",
     "version": "0.1.0",
     "description": "Alloyteam Simple Web Apps - By Yeoman generator-alloyteam-simple",
     "keywords": [
@@ -27,6 +27,8 @@
         "gulp-minify-html": "^0.1.4",
         "gulp-imagemin": "^0.6.1",
         "gulp-compass": "^1.1.9",
+        "gulp-jstemplate-compile": "^0.1.1",
+        "gulp-htmlrefs": "^0.1.3",
         "gulp-zip": "^0.4.0",
         "gulp-watch": "^0.6.8",
         "gulp-newer": "^0.3.0"
