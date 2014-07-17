@@ -1,7 +1,6 @@
 .DS_Store
 *.log
 node_modules
-templates/node_modules
 build
 *.node
 components
@@ -11,3 +10,9 @@ coverage
 sandbox
 test/out-fixtures/*
 test/watch-*.txt
+templates/node_modules
+templates/.sass-cache
+templates/dist
+templates/.tmp
+templates/public
+templates/.offline
