@@ -4,6 +4,7 @@
 // version: 0.1.0
 // created: 2014-07-15
 // history:
+// 0.3.0 2014-07-17 adapt to slush generator
 // 0.2.0 2014-07-15 support htmlrefs rev alloykit-offline
 // 0.1.0 2014-07-15 init
 // --------------------
