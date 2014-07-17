@@ -43,4 +43,16 @@ cd alloyteam-webapp
 ```shell
 slush alloyteam-simple
 ```
+* 安装依赖
+```shell
+npm install
+```
+* 启动开发任务
+```shell
+gulp dev
+```
+* 启动正常发布编译任务
+```shell
+gulp dist
+```
 
