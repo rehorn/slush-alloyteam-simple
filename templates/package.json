@@ -1,0 +1,39 @@
+{
+    "name": "<%= projectName %>",
+    "version": "0.1.0",
+    "description": "Alloyteam Simple Web Apps - By Yeoman generator-alloyteam-simple",
+    "keywords": [
+        "front-end",
+        "alloyteam",
+        "web",
+        "app"
+    ],
+    "homepage": "https://github.com/alloyteam",
+    "author": "alloyteam",
+    "dependencies": {
+        "MD5": "^1.2.1",
+        "lodash": "^2.4.1",
+        "async": "^0.9.0",
+        "run-sequence": "^0.3.6",
+        "gulp": "^3.8.6",
+        "gulp-clean": "^0.3.1",
+        "gulp-concat": "^2.3.3",
+        "gulp-rename": "^1.2.0",
+        "gulp-replace": "^0.4.0",
+        "gulp-savefile": "^0.1.1",
+        "gulp-header": "^1.0.5",
+        "gulp-uglify": "^0.3.1",
+        "gulp-minify-css": "^0.3.6",
+        "gulp-minify-html": "^0.1.4",
+        "gulp-imagemin": "^0.6.1",
+        "gulp-compass": "^1.1.9",
+        "gulp-zip": "^0.4.0",
+        "gulp-watch": "^0.6.8",
+        "gulp-newer": "^0.3.0"
+    },
+    "devDependencies": {},
+    "engines": {
+        "node": ">=0.10.0",
+        "npm": ">=1.2.10"
+    }
+}

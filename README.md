@@ -19,12 +19,18 @@ alloyteam web 前端项目工程化模板
 7. [工程化集成] 通过 task 调用 alloydist 提供 rest 借口，轻松实现命令行部署测试环境、正式环境、离线包发布等
 
 ### 依赖
-1. nodejs 
+1. nodejs
 2. compass (ruby)
-3. yeoman
 
 ### 安装
-1. 安装 compass
-2. 安装 nodejs
-3. 安装 yeoman
-4. 使用 yeoman 生成模板
+1. 安装 ruby，参考 https://www.ruby-lang.org/en/installation/
+2. 安装 compass
+```shell
+gem install compass
+```
+3. 安装 nodejs，参考 http://nodejs.org/
+4. 安装 yeoman、gulp
+```shell
+npm install -g yo gulp
+```
+5. 使用 yeoman 生成模板
