@@ -2,3 +2,5 @@
 .sass-cache
 /dist
 .tmp
+/public
+.offline
