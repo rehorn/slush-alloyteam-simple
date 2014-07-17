@@ -9,7 +9,7 @@ var gulp = require('gulp'),
 gulp.task('default', function(done) {
         gutil.log('slush-alloyteam-simple');
 
-        function tplFiles = function(file) {
+        var tplFiles = function(file) {
             var basename = path.basename(file.path);
             return basename === 'project.js';
         };
