@@ -1,16 +1,16 @@
 {
-    "name": "generator-alloyteam-simple",
+    "name": "slush-alloyteam-simple",
     "version": "0.3.2",
     "description": "Alloyteam Simple Web Apps generator base on slush & glup",
     "keywords": [
         "slushgenerator", "gulp", "web", "app", "front-end", "node", "alloytam"
     ],
-    "homepage": "https://github.com/rehorn/generator-alloyteam-simple",
-    "bugs": "https://github.com/rehorn/generator-alloyteam-simple/issues",
+    "homepage": "https://github.com/rehorn/slush-alloyteam-simple",
+    "bugs": "https://github.com/rehorn/slush-alloyteam-simple/issues",
     "author": "rehornchen@tencent.com",
     "repository": {
         "type": "git",
-        "url": "git://github.com/rehorn/generator-alloyteam-simple.git"
+        "url": "git://github.com/rehorn/slush-alloyteam-simple.git"
     },
     "main": "slushfile.js",
     "files": [
