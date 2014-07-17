@@ -24,22 +24,22 @@ Alloyteam web 前端项目工程化模板
 3. [gulp](https://github.com/gulpjs/gulp/) & [slush](https://github.com/slushjs/slush)
 
 ### 安装
-1. 安装 ruby，参考 https://www.ruby-lang.org/en/installation/
-2. 安装 compass
+* 安装 ruby，参考 https://www.ruby-lang.org/en/installation/
+* 安装 compass
 ```shell
 gem install compass
 ```
-3. 安装 nodejs，参考 http://nodejs.org/
-4. 安装 gulp slush slush-alloyteam-simple
+* 安装 nodejs，参考 http://nodejs.org/
+* 安装 gulp slush slush-alloyteam-simple
 ```shell
 npm install -g gulp slush slush-alloyteam-simple
 ```
-5. 创建项目目录
+* 创建项目目录
 ```shell
 mkdir alloyteam-webapp
 cd alloyteam-webapp
 ```
-6. 初始化项目
+* 初始化项目
 ```shell
 slush alloyteam-simple
 ```
