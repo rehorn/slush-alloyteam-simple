@@ -23,7 +23,6 @@ var async = require('async');
 var compass = require('gulp-compass'),
     clean = require('gulp-clean'),
     rename = require('gulp-rename'),
-    usemin = require('gulp-usemin'),
     rev = require('gulp-rev'),
     uglify = require('gulp-uglify'),
     minifyCss = require('gulp-minify-css'),
@@ -508,4 +507,4 @@ gulp.task('dist', function(cb) {
         cb);
 });
 
-gulp.task('default', ['dist']);
+gulp.task('default', ['dev']);
