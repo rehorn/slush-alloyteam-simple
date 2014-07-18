@@ -4,6 +4,7 @@ var gulp = require('gulp'),
     template = require('gulp-template'),
     gulpif = require('gulp-if'),
     path = require('path'),
+    url = require('url'),
     inquirer = require('inquirer');
 
 gulp.task('default', function(done) {
@@ -39,6 +40,11 @@ gulp.task('default', function(done) {
             if (!answers.moveon) {
                 return done();
             }
+
+            // alloydist mapping setting suggestion
+            answers.distCdnDir = '/data/sites/cdn.qplus.com' + url.parse(answers.cdn).pathname;
+            answers.distHtmlDir = '/data/sites/' + url.parse(answers.cdn).hostname + url.parse(answers.cdn).pathname;
+
             gulp.src(__dirname + '/templates/**') // Note use of __dirname to be relative to generator
             .pipe(gulpif(tplFiles, template(answers))) // Lodash template support
             .pipe(gulp.dest('./')) // Without __dirname here = relative to cwd
