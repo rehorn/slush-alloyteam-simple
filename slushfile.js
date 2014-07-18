@@ -43,7 +43,7 @@ gulp.task('default', function(done) {
 
             // alloydist mapping setting suggestion
             answers.distCdnDir = '/data/sites/cdn.qplus.com' + url.parse(answers.cdn).pathname;
-            answers.distHtmlDir = '/data/sites/' + url.parse(answers.cdn).hostname + url.parse(answers.cdn).pathname;
+            answers.distHtmlDir = '/data/sites/' + url.parse(answers.html).hostname + url.parse(answers.html).pathname;
 
             gulp.src(__dirname + '/templates/**') // Note use of __dirname to be relative to generator
             .pipe(gulpif(tplFiles, template(answers))) // Lodash template support
