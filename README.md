@@ -49,7 +49,7 @@ npm install
 ```
 * 启动开发任务
 ```shell
-gulp dev
+gulp
 ```
 * 启动正常发布编译任务
 ```shell
