@@ -41,9 +41,17 @@ gulp.task('default', function(done) {
                 return done();
             }
 
+            if (!answers.webServer) {
+                gutil.log('html根目录不能为空！');
+                return done();
+            }
+
+            // set cdn default webserver
+            answers.cdn = answers.cdn || answers.webServer;
+
             // alloydist mapping setting suggestion
             answers.distCdnDir = '/data/sites/cdn.qplus.com' + url.parse(answers.cdn).pathname;
-            answers.distHtmlDir = '/data/sites/' + url.parse(answers.html).hostname + url.parse(answers.html).pathname;
+            answers.distHtmlDir = '/data/sites/' + url.parse(answers.webServer).hostname + url.parse(answers.webServer).pathname;
 
             gulp.src(__dirname + '/templates/**') // Note use of __dirname to be relative to generator
             .pipe(gulpif(tplFiles, template(answers))) // Lodash template support
