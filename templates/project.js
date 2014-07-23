@@ -19,7 +19,7 @@ module.exports = {
     // 合并相关
     concat: [
         /*{
-        target: 'js/index.js',
+            target: 'js/index.js',
             include: [
                 'js/common/config.js',
                 'js/common/global.js',
@@ -51,7 +51,7 @@ module.exports = {
     },
     // alloydist相关
     // 可选，alloydist发布单号，用于命令行发布
-    distId: '',  
+    distId: '',
     // alloydist发布映射设置建议，不需改动
     distHtmlDir: '<%= distHtmlDir %>', // html映射
     distCdnDir: '<%= distCdnDir %>' // cdn映射
