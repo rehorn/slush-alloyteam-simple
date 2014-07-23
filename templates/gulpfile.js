@@ -1,7 +1,7 @@
 // =================
 // alloyteam simple project build gulpfile
 // author: rehornchen@tencent.com
-// version: 0.1.0
+// version: 0.3.0
 // created: 2014-07-15
 // history:
 // 0.3.0 2014-07-17 adapt to slush generator
@@ -20,21 +20,26 @@ var url = require('url');
 var _ = require('lodash');
 var async = require('async');
 
+// 异步工作流，连续并入，数组工作流，用 async 替代异步
+// var merge = require('merge-stream'),
+//     // sq = require('stream-queue'),
+//     es = require('event-stream');
+
 var compass = require('gulp-compass'),
-    clean = require('gulp-clean'),
+    clean = require('gulp-rimraf'),
     rename = require('gulp-rename'),
+    footer = require('gulp-footer'),
     rev = require('gulp-rev'),
     uglify = require('gulp-uglify'),
     minifyCss = require('gulp-minify-css'),
-    imagemin = require('gulp-imagemin'),
+    // imagemin = require('gulp-imagemin'),
     minifyHtml = require('gulp-minify-html'),
     concat = require('gulp-concat'),
     savefile = require('gulp-savefile'),
     htmlrefs = require('gulp-htmlrefs'),
     jstemplate = require('gulp-jstemplate-compile'),
     zip = require('gulp-zip'),
-    newer = require('gulp-newer'),
-    watch = require('gulp-watch');
+    newer = require('gulp-newer');
 
 // =================
 // configs
@@ -114,7 +119,7 @@ if (configs.minifyHtml) {
     customMinify.push('minifyHtml');
 }
 if (configs.minifyImage) {
-    customMinify.push('imagemin');
+    // customMinify.push('imagemin');
 }
 
 // global vars
@@ -133,6 +138,9 @@ var distOpt = {
     cwd: dist,
     base: dist
 };
+
+// dev watch mode
+var isWatching = false;
 
 function isUndefined(obj) {
     return obj === void 0;
@@ -352,6 +360,9 @@ gulp.task('htmlrefs', function(cb) {
 
     var htmlRefTask = function(callback) {
         gulp.src(dist + '*.html')
+            .pipe(footer('<!--  publish at <%=date%>  -->\n', {
+                date: new Date()
+            }))
             .pipe(htmlrefs(refOpt))
             .pipe(gulp.dest(dist))
             .on('end', function() {
@@ -377,16 +388,16 @@ gulp.task('noop', function(cb) {
     cb();
 });
 
-gulp.task('imagemin', function() {
-    return gulp.src(src + '**/' + configs.imgType)
-        .pipe(imagemin())
-        .pipe(savefile());
-});
+// gulp.task('imagemin', function() {
+//     return gulp.src(src + '**/' + configs.imgType)
+//         .pipe(imagemin())
+//         .pipe(savefile());
+// });
 
 // alloydist intergration task, build files to public folder
 // html -> public/webserver/**
 // cdn -> public/cdn/**
-gulp.task('alloydist-prepare', function(cb) {
+gulp.task('alloydist:prepare', function(cb) {
     var deployGroup = [{
         target: deploy + 'cdn/' + configs.subMoudle,
         include: globCdn
@@ -412,7 +423,7 @@ gulp.task('alloydist-prepare', function(cb) {
 });
 
 // prepare files to package to offline zip for alloykit
-gulp.task('offline-prepare', function(cb) {
+gulp.task('offline:prepare', function(cb) {
     var q = _.map(configs.zipConf, function(item) {
         return function(callback) {
             var urlObj = url.parse(item.target);
@@ -432,7 +443,7 @@ gulp.task('offline-prepare', function(cb) {
 });
 
 // package .offline -> offline.zip for alloykit
-gulp.task('offline-zip', function() {
+gulp.task('offline:zip', function() {
     return gulp.src('**/*.*', {
         cwd: offlineCache
     })
@@ -469,19 +480,13 @@ gulp.task('cleanup', function() {
         }));
 });
 
-// support browserify
-gulp.task('browserify', function() {
-
-});
-
-// support requirejs
-gulp.task('requirejs', function() {
-
-});
-
 // support local server & livereload
-gulp.task('server', function() {
+gulp.task('livepool', function() {
 
+});
+
+gulp.task('watch:set', function() {
+    isWatching = true;
 });
 
 gulp.task('watch', function() {
@@ -492,7 +497,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('dev', function(cb) {
-    runSequence('clean', ['copy', 'img-rev', 'compass', 'tpl'], 'concat', 'watch', cb);
+    runSequence(['clean', 'watch:set'], ['copy', 'img-rev', 'compass', 'tpl'], 'concat', 'watch', cb);
 });
 
 gulp.task('dist', function(cb) {
@@ -501,9 +506,9 @@ gulp.task('dist', function(cb) {
         'concat', ['tpl-clean', 'concat-clean', 'uglify', 'minifyCss'],
         'htmlrefs',
         customMinify,
-        'alloydist-prepare',
-        'offline-prepare',
-        'offline-zip',
+        'alloydist:prepare',
+        'offline:prepare',
+        'offline:zip',
         cb);
 });
 
