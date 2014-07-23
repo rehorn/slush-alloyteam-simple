@@ -3,6 +3,7 @@ var gulp = require('gulp'),
     install = require('gulp-install'),
     template = require('gulp-template'),
     gulpif = require('gulp-if'),
+    rename = require('gulp-rename'),
     path = require('path'),
     url = require('url'),
     inquirer = require('inquirer');
@@ -53,12 +54,17 @@ gulp.task('default', function(done) {
             answers.distCdnDir = '/data/sites/cdn.qplus.com' + url.parse(answers.cdn).pathname;
             answers.distHtmlDir = '/data/sites/' + url.parse(answers.webServer).hostname + url.parse(answers.webServer).pathname;
 
-            gulp.src(__dirname + '/templates/**') // Note use of __dirname to be relative to generator
-            .pipe(gulpif(tplFiles, template(answers))) // Lodash template support
-            .pipe(gulp.dest('./')) // Without __dirname here = relative to cwd
-            // .pipe(install()) // Run `bower install` and/or `npm install` if necessary
+            gulp.src(__dirname + '/templates/**')
+            .pipe(gulpif(tplFiles, template(answers)))
+            .pipe(rename(function(file) {
+                if (file.basename[0] === '_') {
+                    file.basename = '.' + file.basename.slice(1);
+                }
+            }))
+            .pipe(gulp.dest('./')) 
+            // .pipe(install())
             .on('finish', function() {
-                done(); // Finished!
+                done();
             });
         });
 });
