@@ -15,8 +15,7 @@
     "main": "slushfile.js",
     "files": [
         "slushfile.js",
-        "templates",
-        "LICENSE.md"
+        "templates"
     ],
     "engines": {
         "node": ">= 0.10.26",
