@@ -57,8 +57,8 @@ gulp.task('default', function(done) {
             gulp.src(__dirname + '/templates/**')
             .pipe(gulpif(tplFiles, template(answers)))
             .pipe(rename(function(file) {
-                if (file.basename[0] === '_') {
-                    file.basename = '.' + file.basename.slice(1);
+                if (file.basename[0] === '_' && file.basename[1] === '_') {
+                    file.basename = '.' + file.basename.slice(2);
                 }
             }))
             .pipe(gulp.dest('./')) 

@@ -51,6 +51,10 @@ var configs = {
     webServer: 'http://find.qq.com/',
     subMoudle: '',
 
+    // liveproxy
+    port: 6800,
+    rules: [],
+
     // path related
     src: './src/',
     dist: './dist/',
@@ -480,8 +484,8 @@ gulp.task('cleanup', function() {
         }));
 });
 
-// support local server & livereload
-gulp.task('livepool', function() {
+// support local replacement & livereload
+gulp.task('liveproxy', function() {
 
 });
 
