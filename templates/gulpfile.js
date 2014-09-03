@@ -49,7 +49,7 @@ var configs = {
     name: 'alloyteam-simple-default',
     cdn: 'http://s.url.cn/qqun/',
     webServer: 'http://find.qq.com/',
-    subMoudle: '',
+    subMoudle: '/',
 
     // liveproxy
     port: 6800,
@@ -84,15 +84,47 @@ var configs = {
     offline: '',
 
     // other
-    timeStampBanner: 1
+    timeStampBanner: 0
 };
 
 // overwrite configs
 _.extend(configs, require('./project') || {});
 
 // prepare root with subModule case
-configs.cdnRoot = configs.cdn + configs.subMoudle;
-configs.webServerRoot = configs.webServer + configs.subMoudle;
+configs.cdnRoot = (configs.subMoudle === '/') ? configs.cdn : configs.cdn + configs.subMoudle;
+configs.webServerRoot = (configs.subMoudle === '/') ? configs.webServer : configs.webServer + configs.subMoudle;
+
+// global vars
+var src = configs.src,
+    dist = configs.dist,
+    tmp = configs.tmp,
+    deploy = configs.deploy,
+    offlineCache = configs.offlineCache;
+
+// default src folder options
+var opt = {
+    cwd: src,
+    base: src
+};
+var distOpt = {
+    cwd: dist,
+    base: dist
+};
+
+// dev watch mode
+var isWatching = false;
+
+// fix tpl root
+_.each(configs.concat, function(item) {
+    item.include = _.map(item.include, function(inc) {
+        if (inc.indexOf('tpl/') >= 0) {
+            inc = dist + inc;
+        } else {
+            inc = src + inc;
+        }
+        return inc;
+    });
+});
 
 // set default alloykit offline zip config
 var globCdn = ['**/*.*', '!**/*.{html,ico}'];
@@ -126,26 +158,6 @@ if (configs.minifyImage) {
     // customMinify.push('imagemin');
 }
 
-// global vars
-var src = configs.src,
-    dist = configs.dist,
-    tmp = configs.tmp,
-    deploy = configs.deploy,
-    offlineCache = configs.offlineCache;
-
-// default src folder options
-var opt = {
-    cwd: src,
-    base: src
-};
-var distOpt = {
-    cwd: dist,
-    base: dist
-};
-
-// dev watch mode
-var isWatching = false;
-
 function isUndefined(obj) {
     return obj === void 0;
 };
@@ -158,6 +170,16 @@ gulp.task('clean', function() {
         read: false
     };
     return gulp.src([dist, tmp, deploy, offlineCache], opt)
+        .pipe(clean({
+            force: true
+        }));
+});
+
+// clean node_modules, fix windows file name to long bug..
+gulp.task('cleanmod', function() {
+    return gulp.src('./node_modules', {
+            read: false
+        })
         .pipe(clean({
             force: true
         }));
@@ -192,8 +214,8 @@ gulp.task('compass', function(cb) {
         .pipe(newer(dist))
         .pipe(compass({
             config_file: './config.rb',
-            css: dist,
-            sass: src,
+            css: 'dist/css',
+            sass: 'src/css',
             image: src + 'img/',
             generated_image: dist + 'img/sprite'
         }))
@@ -207,11 +229,11 @@ gulp.task('tpl', function(cb) {
     var q = _.map(configs.tpl, function(item) {
         return function(callback) {
             gulp.src(item.include, opt)
-                .pipe(newer(dist))
+                .pipe(newer(dist + item.target))
                 .pipe(jstemplate())
                 .pipe(concat(item.target))
                 .pipe(gulp.dest(dist))
-                .on('end', function() {
+                .on('end', function(err) {
                     callback();
                 });
         };
@@ -225,12 +247,11 @@ gulp.task('tpl', function(cb) {
 // concat files using qzmin config
 var js2concat = ['**/*.js', 'tpl/**/*.html'];
 gulp.task('concat', ['tpl'], function(cb) {
-    // concat js/css file
+    // concat js/css/tpl file
     var q = _.map(configs.concat, function(item) {
         return function(callback) {
-
-            gulp.src(item.include, opt)
-                .pipe(newer(dist))
+            gulp.src(item.include)
+                .pipe(newer(dist + item.target))
                 .pipe(concat(item.target))
                 .pipe(gulp.dest(dist))
                 .on('end', function() {
@@ -247,7 +268,7 @@ gulp.task('concat', ['tpl'], function(cb) {
 // remove tpl complie .js cache 
 gulp.task('concat-clean', function(cb) {
     // remove inline 
-    var q = _.map(configs.tpl, function(item) {
+    var q = _.map(configs.concat, function(item) {
         return function(callback) {
             item.inline = isUndefined(item.inline) ? 0 : item.inline;
             if (item.inline) {
@@ -364,10 +385,10 @@ gulp.task('htmlrefs', function(cb) {
 
     var htmlRefTask = function(callback) {
         gulp.src(dist + '*.html')
-            .pipe(footer('<!--  publish at <%=date%>  -->\n', {
-                date: new Date()
-            }))
-            .pipe(htmlrefs(refOpt))
+        // .pipe(footer('<!--  publish at <%=date%>  -->\n', {
+        //     date: new Date()
+        // }))
+        .pipe(htmlrefs(refOpt))
             .pipe(gulp.dest(dist))
             .on('end', function() {
                 callback();
@@ -449,8 +470,8 @@ gulp.task('offline:prepare', function(cb) {
 // package .offline -> offline.zip for alloykit
 gulp.task('offline:zip', function() {
     return gulp.src('**/*.*', {
-        cwd: offlineCache
-    })
+            cwd: offlineCache
+        })
         .pipe(zip(configs.zipName))
         .pipe(gulp.dest(deploy + 'offline'));
 });
@@ -477,8 +498,8 @@ gulp.task('offline', function(cb) {
 gulp.task('cleanup', function() {
     // cleanup
     return gulp.src([dist, tmp, deploy, offlineCache, './.sass-cache'], {
-        read: false
-    })
+            read: false
+        })
         .pipe(clean({
             force: true
         }));
@@ -501,13 +522,13 @@ gulp.task('watch', function() {
 });
 
 gulp.task('dev', function(cb) {
-    runSequence(['clean', 'watch:set'], ['copy', 'img-rev', 'compass', 'tpl'], 'concat', 'watch', cb);
+    runSequence(['clean', 'watch:set'], ['copy', 'img-rev', 'compass'], 'concat', 'watch', cb);
 });
 
 gulp.task('dist', function(cb) {
     runSequence(
-        'clean', ['copy', 'img-rev', 'compass', 'tpl'],
-        'concat', ['tpl-clean', 'concat-clean', 'uglify', 'minifyCss'],
+        'clean', ['copy', 'img-rev', 'compass'],
+        'concat', ['tpl-clean', 'concat-clean'], ['uglify', 'minifyCss'],
         'htmlrefs',
         customMinify,
         'alloydist:prepare',

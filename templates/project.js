@@ -8,33 +8,29 @@ module.exports = {
     // 子模块名称
     subMoudle: '<%= subMoudle %>/',
     // 模板相关
-    tpl: [
-        /*{
-            target: 'tpl/index.js',
-            include: [
-                'tpl/index/*.html'
-            ]
-        }*/
-    ],
+    tpl: [{
+        target: 'tpl/index.js',
+        include: [
+            'tpl/index/*.html'
+        ]
+    }],
     // 合并相关
-    concat: [
-        /*{
-            target: 'js/index.js',
-            include: [
-                'js/common/config.js',
-                'js/common/global.js',
-                'tpl/index.js',
-                'js/index/*.js'
-            ]
-        }, {
-            target: 'js/inline.js',
-            include: [
-                'js/common/config.js',
-                'js/index/*.js'
-            ],
-            inline: 1  // 是否用于inline，是则在dist中不生成实体合并文件，直接inline
-        }*/
-    ],
+    concat: [{
+        target: 'js/index.js',
+        include: [
+            'js/common/config.js',
+            'js/common/global.js',
+            'tpl/index.js',
+            'js/index/*.js'
+        ]
+    }, {
+        target: 'js/inline.js',
+        include: [
+            'js/common/config.js',
+            'js/index/*.js'
+        ],
+        inline: 1 // 是否用于inline，是则在dist中不生成实体合并文件，直接inline
+    }],
     // alloykit 离线相关
     zipBlacklist: [], // 离线包黑名单
     // 使用 alloydist 发布离线包
