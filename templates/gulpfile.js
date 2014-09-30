@@ -4,6 +4,7 @@
 // version: 0.3.17
 // created: 2014-07-15
 // history:
+// 0.4.1 2014-09-30 add cmd line publish support
 // 0.3.17 2014-09-30 add retina sprite support
 // 0.3.16 2014-09-29 remove requirement of build:htmlrefs comment 
 // 0.3.0 2014-07-17 adapt to slush generator
