@@ -31,6 +31,7 @@ module.exports = {
         ],
         inline: 1 // 是否用于inline，是则在dist中不生成实体合并文件，直接inline
     }],
+    jsContentRevScope: '',
     // alloykit 离线相关
     zipBlacklist: [], // 离线包黑名单
     // 使用 alloydist 发布离线包
@@ -53,6 +54,8 @@ module.exports = {
     // alloydist相关
     // 可选，alloydist发布单号，用于命令行发布
     distId: '',
+    opUser: 'alloy-gulp',
+    token: 'ASdxseRTSXfiGUIxnuRisTU',
     // alloydist发布映射设置建议，不需改动
     distHtmlDir: '<%= distHtmlDir %>', // html映射
     distCdnDir: '<%= distCdnDir %>' // cdn映射
