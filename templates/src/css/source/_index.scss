@@ -1,9 +1,14 @@
 body {
-    border:1;
+    border: 1;
 }
 .hello {
-    &:before {
-        @include icons-sprite("icon-search")
+    &: before {
+        @include icons-sprite("icon-search");
+    }
+}
+.hello-2x {
+    &: before {
+        @include icons-sprite-retina("icon-search");
     }
 }
 .banner {
