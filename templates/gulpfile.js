@@ -28,7 +28,6 @@ var async = require('async');
 var compass = require('gulp-compass'),
     clean = require('gulp-rimraf'),
     rename = require('gulp-rename'),
-    footer = require('gulp-footer'),
     rev = require('gulp-rev'),
     uglify = require('gulp-uglify'),
     minifyCss = require('gulp-minify-css'),
@@ -164,25 +163,35 @@ function isUndefined(obj) {
 
 console.log('start to build project [' + configs.name + ']...');
 
-// remove old or tmp files
-gulp.task('clean', function() {
+function doClean(toClean) {
     var opt = {
         read: false
     };
-    return gulp.src([dist, tmp, deploy, offlineCache], opt)
-        .pipe(clean({
-            force: true
-        }));
+    var cOpt = {
+        force: true
+    };
+    return gulp.src(toClean, opt)
+        .pipe(clean(cOpt));
+};
+
+// remove old or tmp files
+gulp.task('clean', function() {
+    return doClean([dist, tmp, deploy, offlineCache]);
 });
 
 // clean node_modules, fix windows file name to long bug..
 gulp.task('cleanmod', function() {
-    return gulp.src('./node_modules', {
-            read: false
-        })
-        .pipe(clean({
-            force: true
-        }));
+    return doClean('./node_modules');
+});
+
+// clean all temp files
+gulp.task('cleanup', function() {
+    return doClean([dist, tmp, deploy, offlineCache, './.sass-cache']);
+});
+
+// clean dist temp files
+gulp.task('clean-dist', function() {
+    return doClean([tmp, offlineCache]);
 });
 
 // copy js/html from src->dist
@@ -360,17 +369,6 @@ gulp.task('htmlrefs', function(cb) {
 
     var tasks = [];
 
-    // 由 compass 负责 image-url 替换
-    // var cssRefTask = function(callback) {
-    //     gulp.src(dist + '**/*.css')
-    //         .pipe(htmlrefs(refOpt))
-    //         .pipe(gulp.dest(dist))
-    //         .on('end', function() {
-    //             callback();
-    //         });
-    // };
-    // tasks.push(cssRefTask);
-
     if (configs.jsContentRevScope) {
         var jsRefTask = function(callback) {
             gulp.src(configs.jsContentRevScope, distOpt)
@@ -380,15 +378,12 @@ gulp.task('htmlrefs', function(cb) {
                     callback();
                 });
         };
-        tasks.push(cssRefTask);
+        tasks.push(jsRefTask);
     }
 
     var htmlRefTask = function(callback) {
         gulp.src(dist + '*.html')
-        // .pipe(footer('<!--  publish at <%=date%>  -->\n', {
-        //     date: new Date()
-        // }))
-        .pipe(htmlrefs(refOpt))
+            .pipe(htmlrefs(refOpt))
             .pipe(gulp.dest(dist))
             .on('end', function() {
                 callback();
@@ -444,7 +439,6 @@ gulp.task('alloydist:prepare', function(cb) {
     async.parallel(q, function(err, result) {
         cb(err, result);
     });
-
 });
 
 // prepare files to package to offline zip for alloykit
@@ -494,17 +488,6 @@ gulp.task('offline', function(cb) {
 
 });
 
-// clean all temp files
-gulp.task('cleanup', function() {
-    // cleanup
-    return gulp.src([dist, tmp, deploy, offlineCache, './.sass-cache'], {
-            read: false
-        })
-        .pipe(clean({
-            force: true
-        }));
-});
-
 // support local replacement & livereload
 gulp.task('liveproxy', function() {
 
@@ -534,6 +517,7 @@ gulp.task('dist', function(cb) {
         'alloydist:prepare',
         'offline:prepare',
         'offline:zip',
+        'clean-dist',
         cb);
 });
 

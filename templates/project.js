@@ -38,9 +38,14 @@ module.exports = {
         // 'bid': 128, // alloykit bid, 需要修改
         // 'publish': true,
         // 'compatible': 0,
-        // 'version': 0,
+        // 'qversionfrom': 0,
+        // 'qversionto': 0,
         // 'platform': [2, 3],
         // 'loadmode': 2,
+        // 'verifyType': 0,
+        // 'expire_time': 1577836800000,
+        // 'cdn': 'defaultCDN',
+        // 'note': '',
         // 'frequency': 1,
         // 'gray': true,
         // 'uins': []
