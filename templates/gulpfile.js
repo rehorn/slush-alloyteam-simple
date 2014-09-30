@@ -21,6 +21,7 @@ var path = require('path');
 var url = require('url');
 var _ = require('lodash');
 var async = require('async');
+var request = require('request');
 
 // 异步工作流，连续并入，数组工作流，用 async 替代异步
 // var merge = require('merge-stream'),
@@ -90,6 +91,10 @@ var configs = {
 
 // overwrite configs
 _.extend(configs, require('./project') || {});
+// overwrite user define value
+if (fs.existsSync('./userdef.js')) {
+    _.extend(configs, require('./userdef') || {});
+}
 
 // prepare root with subModule case
 configs.cdnRoot = (configs.subMoudle === '/') ? configs.cdn : configs.cdn + configs.subMoudle;
@@ -478,22 +483,43 @@ gulp.task('offline:zip', function() {
         .pipe(gulp.dest(deploy + 'offline'));
 });
 
+
+var apiData = {
+    did: configs.distId,
+    opUser: configs.opUser,
+    token: configs.token
+};
 // alloydist -> deloy test env
 gulp.task('testenv', function() {
-    // test env 
-
+    // test env
+    request.post('http://jb.oa.com/dist/api/go', {
+        form: apiData
+    }, function(err, resp, body) {
+        var data = JSON.parse(body);
+        console.log(data);
+    });
 });
 
 // alloydist -> prebuild and create ars publish order
 gulp.task('ars', function() {
     // publish ars
-    // 
+    request.post('http://jb.oa.com/dist/api/ars', {
+        form: data
+    }, function(err, resp, body) {
+        var data = JSON.parse(body);
+        console.log(data);
+    });
 });
 
 // alloydist -> prebuild and auto post offline zip
 gulp.task('offline', function(cb) {
     // publish offline zip
-
+    request.post('http://jb.oa.com/dist/api/offline', {
+        form: data
+    }, function(err, resp, body) {
+        var data = JSON.parse(body);
+        console.log(data);
+    });
 });
 
 // support local replacement & livereload
