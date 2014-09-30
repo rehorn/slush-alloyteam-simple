@@ -1,9 +1,11 @@
 // =================
 // alloyteam simple project build gulpfile
 // author: rehornchen@tencent.com
-// version: 0.3.0
+// version: 0.3.17
 // created: 2014-07-15
 // history:
+// 0.3.17 2014-09-30 add retina sprite support
+// 0.3.16 2014-09-29 remove requirement of build:htmlrefs comment 
 // 0.3.0 2014-07-17 adapt to slush generator
 // 0.2.0 2014-07-15 support htmlrefs rev alloykit-offline
 // 0.1.0 2014-07-15 init
@@ -80,10 +82,10 @@ var configs = {
     zip: 1,
     zipConf: [],
     zipName: 'offline.zip',
-    offline: '',
+    zipBlacklist: [],
 
     // other
-    timeStampBanner: 0
+    akSupport: 1
 };
 
 // overwrite configs
@@ -92,6 +94,10 @@ _.extend(configs, require('./project') || {});
 // prepare root with subModule case
 configs.cdnRoot = (configs.subMoudle === '/') ? configs.cdn : configs.cdn + configs.subMoudle;
 configs.webServerRoot = (configs.subMoudle === '/') ? configs.webServer : configs.webServer + configs.subMoudle;
+
+function isUndefined(obj) {
+    return obj === void 0;
+};
 
 // global vars
 var src = configs.src,
@@ -150,16 +156,19 @@ if (configs.zip && _.isEmpty(configs.zipConf)) {
 }
 
 var customMinify = ['noop'];
+var customAkFlow = ['noop'];
 if (configs.minifyHtml) {
     customMinify.push('minifyHtml');
 }
 if (configs.minifyImage) {
     // customMinify.push('imagemin');
 }
+if (configs.akSupport) {
+    customAkFlow.push('alloydist:prepare');
+    customAkFlow.push('offline:prepare');
+    customAkFlow.push('offline:zip');
+}
 
-function isUndefined(obj) {
-    return obj === void 0;
-};
 
 console.log('start to build project [' + configs.name + ']...');
 
@@ -458,7 +467,6 @@ gulp.task('offline:prepare', function(cb) {
     async.parallel(q, function(err, result) {
         cb(err, result);
     });
-
 });
 
 // package .offline -> offline.zip for alloykit
@@ -514,9 +522,7 @@ gulp.task('dist', function(cb) {
         'concat', ['tpl-clean', 'concat-clean'], ['uglify', 'minifyCss'],
         'htmlrefs',
         customMinify,
-        'alloydist:prepare',
-        'offline:prepare',
-        'offline:zip',
+        customAkFlow,
         'clean-dist',
         cb);
 });
