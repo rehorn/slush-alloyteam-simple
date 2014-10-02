@@ -4,6 +4,7 @@
 // version: 0.3.17
 // created: 2014-07-15
 // history:
+// 0.4.2 2014-10-2 add jsrefs debug support
 // 0.4.1 2014-09-30 add cmd line publish support
 // 0.3.17 2014-09-30 add retina sprite support
 // 0.3.16 2014-09-29 remove requirement of build:htmlrefs comment 
@@ -39,6 +40,7 @@ var compass = require('gulp-compass'),
     minifyHtml = require('gulp-minify-html'),
     concat = require('gulp-concat'),
     savefile = require('gulp-savefile'),
+    jsrefs = require('gulp-jsrefs'),
     htmlrefs = require('gulp-htmlrefs'),
     jstemplate = require('gulp-jstemplate-compile'),
     zip = require('gulp-zip'),
@@ -363,6 +365,18 @@ gulp.task('minifyCss', function() {
         .pipe(gulp.dest(configs.cssRev))
 });
 
+// replace html js contact to seprate script inline for debug/develop
+gulp.task('jsrefs', function() {
+    var refOpt = {
+        urlPrefix: '../',
+        mapping: configs.concat
+    };
+
+    return gulp.src(dist + '*.html')
+        .pipe(jsrefs(refOpt))
+        .pipe(gulp.dest(dist));
+});
+
 // replace html/js/css reference resources to new md5 rev version
 // inline js to html, or base64 to img
 gulp.task('htmlrefs', function(cb) {
@@ -540,7 +554,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('dev', function(cb) {
-    runSequence(['clean', 'watch:set'], ['copy', 'img-rev', 'compass'], 'concat', 'watch', cb);
+    runSequence(['clean', 'watch:set'], ['copy', 'img-rev', 'compass'], ['concat', 'jsrefs'], 'watch', cb);
 });
 
 gulp.task('dist', function(cb) {
