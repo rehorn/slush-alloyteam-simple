@@ -212,7 +212,7 @@ gulp.task('clean-dist', function() {
 });
 
 // copy js/html from src->dist
-var things2copy = ['*.{html,ico}', 'js/*.js', 'js/libs/**/*.js', 'img/static/**/' + configs.imgType];
+var things2copy = ['*.{html,ico}', 'libs/**/*.*', 'js/*.js', 'js/libs/**/*.js', 'img/static/**/' + configs.imgType];
 gulp.task('copy', function() {
     return gulp.src(things2copy, opt)
         .pipe(newer(dist))
