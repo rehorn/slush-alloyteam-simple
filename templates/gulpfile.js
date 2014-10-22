@@ -519,7 +519,7 @@ gulp.task('testenv', function() {
 gulp.task('ars', function() {
     // publish ars
     request.post('http://jb.oa.com/dist/api/ars', {
-        form: data
+        form: apiData
     }, function(err, resp, body) {
         var data = JSON.parse(body);
         console.log(data);
@@ -530,7 +530,7 @@ gulp.task('ars', function() {
 gulp.task('offline', function(cb) {
     // publish offline zip
     request.post('http://jb.oa.com/dist/api/offline', {
-        form: data
+        form: apiData
     }, function(err, resp, body) {
         var data = JSON.parse(body);
         console.log(data);
