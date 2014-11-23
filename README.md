@@ -292,21 +292,75 @@ var data = {
 var dom = listTpl(data);
 ```
 * 在 js 中引用 src/img/common 下图片
+```
+var banner = require('../../img/common/banner.png');
+// will change to: "http://s.url.cn/qqun/img/common/banner-be70f3b1.png"
+```
 
 * 在 js 中引用 src/img/static 下图片
+```
+var staticImg = require('../../img/static/static-img-url.png');
+// will change to: "http://s.url.cn/qqun/img/static/static-img-url.png"
+```
 
 * 在 js 中引用第三方库，如 jQuery
+修改 project.js 配置，在 webpack 配置中添加 jQuery: "jQuery" (window.jQuery 可访问，其他库类似)
+```
+externals: {
+    jQuery: "jQuery"
+}
+```
+在 js 中直接添加引用
+```
+var jQuery = require('jQuery');
+```
+在 html 中添加 jquery 引用
+```
+<script src="js/libs/jquery/jquery.js"></script>
+```
 
 * 独立打包公共库，共享代码，避免不同页面 js 重复打包
+修改 project.js 配置，添加公共库入口 common
+```
+entry: {
+    commons: './src/js/common/index.js',
+    index: './src/js/index/index.js',
+    mypage: './src/js/mypage/index.js'
+},
+```
+在 common/index.js 中暴露一个全局变量 window.commons 
+```
+// src/js/common/index.js
+window.commons = {
+    sub1: require('./sub1.js'),
+    sub2: require('./sub2.js')
+};
+```
+按照第三方类库的方式，引入 commons
+```
+externals: {
+    commons: "commons"
+}
+```
+在 js 中直接添加引用
+```
+var commons = require('commons');
+```
+在 html 中添加 commons 引用
+```
+<script src="js/commons.js"></script>
+<script src="js/mypage.js"></script>
+```
 
 * 异步远程加载 js
+待续
 
 ### 关于 handlebar 模板文件
 * 语法参考: http://handlebarsjs.com/  
 * https://github.com/altano/handlebars-loader
 
 ### 关于 html 文件
-待续
+
 
 ### 关于 liveproxy 开发代理
 待续
