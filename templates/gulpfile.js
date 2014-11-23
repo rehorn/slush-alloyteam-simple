@@ -94,11 +94,11 @@ var webpackLoader = {
             test: /\.hbs$/,
             loader: "handlebars-loader"
         }, {
-            test: /common\/*\.hbs$/,
-            loader: "handlebars-loader"
+            test: /common\/.*\.(png|jpg)$/,
+            loader: "file2?name=" + configs.cdn + "img/common/" + "[name]-[hash:8].[ext]"
         }, {
-            test: /\.hbs$/,
-            loader: "handlebars-loader"
+            test: /static\/.*\.(png|jpg)$/,
+            loader: "file2?name=" + configs.cdn + "img/static/" + "[name].[ext]"
         }]
     }
 };
