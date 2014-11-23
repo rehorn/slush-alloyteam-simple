@@ -1,0 +1,19 @@
+$<%= spriteName %>:sprite-map("sprite/<%= spriteName %>/*.png", $layout:smart);
+$<%= spriteName %>-2x:sprite-map("sprite/<%= spriteName %>@2x/*.png", $layout:smart);
+//Sprite mixin, works perfectly with standard defines
+@mixin <%= spriteName %>-sprite-retina($sprite) {
+    background-image: sprite-url($<%= spriteName %>);
+    background-position: sprite-position($<%= spriteName %>, $sprite);
+    background-repeat: no-repeat;
+    overflow: hidden;
+    display: block;
+    height: image-height(sprite-file($<%= spriteName %>, $sprite));
+    width: image-width(sprite-file($<%= spriteName %>, $sprite));
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        background-image: sprite-url($<%= spriteName %>-2x);
+        background-size: (image-width(sprite-path($<%= spriteName %>-2x)) / 2) (image-height(sprite-path($<%= spriteName %>-2x)) / 2);
+        background-position: round(nth(sprite-position($<%= spriteName %>-2x, $sprite), 1) / 2) round(nth(sprite-position($<%= spriteName %>-2x, $sprite), 2) / 2);
+        height: image-height(sprite-file($<%= spriteName %>-2x, $sprite)) / 2;
+        width: image-width(sprite-file($<%= spriteName %>-2x, $sprite)) / 2;
+    }
+}

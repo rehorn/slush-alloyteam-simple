@@ -1,0 +1,3 @@
+$<%= spriteName %>-layout:smart;
+@import "sprite/<%= spriteName %>/*.png";
+@include all-<%= spriteName %>-sprites;

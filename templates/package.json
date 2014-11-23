@@ -9,6 +9,10 @@
         "app"
     ],
     "homepage": "https://github.com/alloyteam",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/rehorn/slush-alloyteam-simple.git"
+    },
     "author": "alloyteam",
     "dependencies": {
         "MD5": "^1.2.1",
