@@ -106,7 +106,7 @@ var webpackLoader = {
 // overwrite configs
 _.extend(configs, _configs, require('./project') || {});
 // set webpack module loader
-configs.webpack.module = webpackLoader;
+configs.webpack.module = webpackLoader.module;
 // overwrite user define value
 if (fs.existsSync('./userdef.js')) {
     _.extend(configs, require('./userdef') || {});
