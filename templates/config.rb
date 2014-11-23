@@ -4,9 +4,9 @@
 Encoding.default_external = "utf-8"
 
 dist_root = "dist/"
-http_images_path = "../img"
-http_generated_images_path = "../../img/sprite"
-generated_images_dir = dist_root + "img/sprite"
+http_images_path = "../img/common"
+http_generated_images_path = "../../img"
+generated_images_dir = dist_root + "img"
 
 # To enable relative paths to assets via compass helper functions. Uncomment:
 # relative_assets = true

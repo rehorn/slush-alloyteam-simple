@@ -4,6 +4,7 @@
 // version: 0.3.17
 // created: 2014-07-15
 // history:
+// 0.5.0 2014-11-24 refact: js modular with webpack
 // 0.4.2 2014-10-2 add jsrefs debug support
 // 0.4.1 2014-09-30 add cmd line publish support
 // 0.3.17 2014-09-30 add retina sprite support
@@ -24,25 +25,19 @@ var url = require('url');
 var _ = require('lodash');
 var async = require('async');
 var request = require('request');
-
-// 异步工作流，连续并入，数组工作流，用 async 替代异步
-// var merge = require('merge-stream'),
-//     // sq = require('stream-queue'),
-//     es = require('event-stream');
+var del = require('del');
+var vinylPaths = require('vinyl-paths');
 
 var compass = require('gulp-compass'),
-    clean = require('gulp-rimraf'),
     rename = require('gulp-rename'),
     rev = require('gulp-rev'),
     uglify = require('gulp-uglify'),
     minifyCss = require('gulp-minify-css'),
     // imagemin = require('gulp-imagemin'),
     minifyHtml = require('gulp-minify-html'),
-    concat = require('gulp-concat'),
     savefile = require('gulp-savefile'),
-    jsrefs = require('gulp-jsrefs'),
+    webpack = require('gulp-webpack'),
     htmlrefs = require('gulp-htmlrefs'),
-    jstemplate = require('gulp-jstemplate-compile'),
     zip = require('gulp-zip'),
     newer = require('gulp-newer');
 
@@ -60,40 +55,58 @@ var configs = {
     port: 6800,
     rules: [],
 
-    // path related
-    src: './src/',
-    dist: './dist/',
-    tmp: './.tmp/',
-    deploy: './public/',
-    offlineCache: './.offline/',
-    imgType: '*.{jpg,jpeg,png,bmp,gif,ttf,ico,htc}',
-    cssRev: './.tmp/.cssrev/',
-    jsRev: './.tmp/.jsrev/',
-    // jsContentRevScope: '**/*.js',
-    jsContentRevScope: '',
+    // 图片格式
+    // imgType: '*.{jpg,jpeg,png,bmp,gif,ttf,ico,htc}',
+    imgType: '*.*',
 
     // compress related
     minifyHtml: 0,
     minifyImage: 0,
 
-    // template related
-    tpl: [],
-    tplDefautInline: 1,
-    // combine related
-    concat: [],
+    // webpack
+    webpack: {},
 
-    // offline related
+    // jb support
+    JBSupport: 1,
+    // 是否需要打 zip 包
     zip: 1,
+    // zip 包路径配置
     zipConf: [],
+    // zip 名称
     zipName: 'offline.zip',
-    zipBlacklist: [],
+    // 离线包黑名单 
+    zipBlacklist: []
+};
 
-    // other
-    akSupport: 1
+var _configs = {
+    src: './src/',
+    dist: './dist/',
+    tmp: './.tmp/',
+    deploy: './public/',
+    offlineCache: './.offline/',
+    cssRev: './.tmp/.cssrev/',
+    jsRev: './.tmp/.jsrev/',
+};
+
+var webpackLoader = {
+    module: {
+        loaders: [{
+            test: /\.hbs$/,
+            loader: "handlebars-loader"
+        }, {
+            test: /common\/*\.hbs$/,
+            loader: "handlebars-loader"
+        }, {
+            test: /\.hbs$/,
+            loader: "handlebars-loader"
+        }]
+    }
 };
 
 // overwrite configs
-_.extend(configs, require('./project') || {});
+_.extend(configs, _configs, require('./project') || {});
+// set webpack module loader
+configs.webpack.module = webpackLoader;
 // overwrite user define value
 if (fs.existsSync('./userdef.js')) {
     _.extend(configs, require('./userdef') || {});
@@ -102,10 +115,6 @@ if (fs.existsSync('./userdef.js')) {
 // prepare root with subModule case
 configs.cdnRoot = (configs.subMoudle === '/') ? configs.cdn : configs.cdn + configs.subMoudle;
 configs.webServerRoot = (configs.subMoudle === '/') ? configs.webServer : configs.webServer + configs.subMoudle;
-
-function isUndefined(obj) {
-    return obj === void 0;
-};
 
 // global vars
 var src = configs.src,
@@ -126,18 +135,6 @@ var distOpt = {
 
 // dev watch mode
 var isWatching = false;
-
-// fix tpl root
-_.each(configs.concat, function(item) {
-    item.include = _.map(item.include, function(inc) {
-        if (inc.indexOf('tpl/') >= 0) {
-            inc = dist + inc;
-        } else {
-            inc = src + inc;
-        }
-        return inc;
-    });
-});
 
 // set default alloykit offline zip config
 var globCdn = ['**/*.*', '!**/*.{html,ico}'];
@@ -164,51 +161,33 @@ if (configs.zip && _.isEmpty(configs.zipConf)) {
 }
 
 var customMinify = ['noop'];
-var customAkFlow = ['noop'];
+var customJBFlow = ['noop'];
 if (configs.minifyHtml) {
     customMinify.push('minifyHtml');
 }
 if (configs.minifyImage) {
     // customMinify.push('imagemin');
 }
-if (configs.akSupport) {
-    customAkFlow.push('alloydist:prepare');
-    customAkFlow.push('offline:prepare');
-    customAkFlow.push('offline:zip');
+if (configs.JBSupport) {
+    customJBFlow.push('jb:prepare');
+    customJBFlow.push('ak:zip');
 }
-
 
 console.log('start to build project [' + configs.name + ']...');
 
-function doClean(toClean) {
-    var opt = {
-        read: false
-    };
-    var cOpt = {
-        force: true
-    };
-    return gulp.src(toClean, opt)
-        .pipe(clean(cOpt));
-};
-
 // remove old or tmp files
-gulp.task('clean', function() {
-    return doClean([dist, tmp, deploy, offlineCache]);
+gulp.task('clean', function(cb) {
+    del([dist, tmp, deploy, offlineCache], cb);
 });
 
 // clean node_modules, fix windows file name to long bug..
-gulp.task('cleanmod', function() {
-    return doClean('./node_modules');
+gulp.task('cleanmod', function(cb) {
+    del('./node_modules', cb);
 });
 
 // clean all temp files
-gulp.task('cleanup', function() {
-    return doClean([dist, tmp, deploy, offlineCache, './.sass-cache']);
-});
-
-// clean dist temp files
-gulp.task('clean-dist', function() {
-    return doClean([tmp, offlineCache]);
+gulp.task('cleanall', function(cb) {
+    del([dist, tmp, deploy, offlineCache, './.sass-cache'], cb);
 });
 
 // copy js/html from src->dist
@@ -220,7 +199,7 @@ gulp.task('copy', function() {
 });
 
 // copy and rev some images files [filename-md5.png style]
-var image2copy = 'img/' + configs.imgType;
+var image2copy = '{img/,img/common/}' + configs.imgType;
 gulp.task('img-rev', function() {
     // img root 
     return gulp.src(image2copy, opt)
@@ -235,7 +214,7 @@ gulp.task('img-rev', function() {
 
 // compile scss and auto spriting 
 var scss2compile = '**/*.scss';
-gulp.task('compass', function(cb) {
+gulp.task('compass', function() {
     return gulp.src(scss2compile, opt)
         .pipe(newer(dist))
         .pipe(compass({
@@ -248,138 +227,43 @@ gulp.task('compass', function(cb) {
         .pipe(gulp.dest(dist));
 });
 
-// compile tpl 
-var tpl2compile = 'tpl/**/*.html';
-gulp.task('tpl', function(cb) {
-    // concat js/css file
-    var q = _.map(configs.tpl, function(item) {
-        return function(callback) {
-            gulp.src(item.include, opt)
-                .pipe(newer(dist + item.target))
-                .pipe(jstemplate())
-                .pipe(concat(item.target))
-                .pipe(gulp.dest(dist))
-                .on('end', function(err) {
-                    callback();
-                });
-        };
-    });
-
-    async.parallel(q, function(err, result) {
-        cb(err, result);
-    });
-});
-
-// concat files using qzmin config
-var js2concat = ['**/*.js', 'tpl/**/*.html'];
-gulp.task('concat', ['tpl'], function(cb) {
-    // concat js/css/tpl file
-    var q = _.map(configs.concat, function(item) {
-        return function(callback) {
-            gulp.src(item.include)
-                .pipe(newer(dist + item.target))
-                .pipe(concat(item.target))
-                .pipe(gulp.dest(dist))
-                .on('end', function() {
-                    callback();
-                });
-        };
-    });
-
-    async.parallel(q, function(err, result) {
-        cb(err, result);
-    });
-});
-
-// remove tpl complie .js cache 
-gulp.task('concat-clean', function(cb) {
-    // remove inline 
-    var q = _.map(configs.concat, function(item) {
-        return function(callback) {
-            item.inline = isUndefined(item.inline) ? 0 : item.inline;
-            if (item.inline) {
-                gulp.src(item.target, distOpt)
-                    .pipe(clean())
-                    .pipe(gulp.dest(tmp))
-                    .on('end', function() {
-                        callback();
-                    });
-            } else {
-                callback();
-            }
-        };
-    });
-
-    async.parallel(q, function(err, result) {
-        cb(err, result);
-    });
-});
-
-// remove tpl complie .js cache 
-gulp.task('tpl-clean', function(cb) {
-    // remove inline 
-    var q = _.map(configs.tpl, function(item) {
-        return function(callback) {
-            item.inline = isUndefined(item.inline) ? configs.tplDefautInline : item.inline;
-            if (item.inline) {
-                gulp.src(item.target, distOpt)
-                    .pipe(clean())
-                    .pipe(gulp.dest(tmp))
-                    .on('end', function() {
-                        callback();
-                    });
-            } else {
-                callback();
-            }
-        };
-    });
-
-    async.parallel(q, function(err, result) {
-        cb(err, result);
-    });
+// packer js using webpack
+var js2webpack = src + 'js/**/*.js';
+var tpl2webpack = src + 'tpl/**/*.*';
+gulp.task('webpack', function() {
+    return gulp.src(js2webpack)
+        .pipe(webpack(configs.webpack))
+        .pipe(gulp.dest(dist + 'js/'));
 });
 
 // minify js and generate reversion files
 // stand alone cmd to make sure all js minified
 // known bug: htmlrefs 在 rev 走后，可能会不准
 gulp.task('uglify', function() {
-    return gulp.src('{' + dist + ',' + tmp + '}/**/*.js')
+    return gulp.src(dist + '/**/*.js')
         .pipe(uglify())
-        .pipe(clean())
+        .pipe(vinylPaths(del))
         .pipe(rev())
         .pipe(savefile())
         .pipe(rev.manifest())
         .pipe(gulp.dest(configs.jsRev))
-
 });
 
 // minify css and generate reversion files
 // stand alone cmd to make sure all css minified
 gulp.task('minifyCss', function() {
-    return gulp.src('{' + dist + ',' + tmp + '}/**/*.css')
+    return gulp.src(dist + '/**/*.css')
         .pipe(minifyCss())
-        .pipe(clean())
+        .pipe(vinylPaths(del))
         .pipe(rev())
         .pipe(savefile())
         .pipe(rev.manifest())
         .pipe(gulp.dest(configs.cssRev))
 });
 
-// replace html js contact to seprate script inline for debug/develop
-gulp.task('jsrefs', function() {
-    var refOpt = {
-        urlPrefix: '../',
-        mapping: configs.concat
-    };
-
-    return gulp.src(dist + '*.html')
-        .pipe(jsrefs(refOpt))
-        .pipe(gulp.dest(dist));
-});
-
 // replace html/js/css reference resources to new md5 rev version
 // inline js to html, or base64 to img
-gulp.task('htmlrefs', function(cb) {
+gulp.task('htmlrefs', function() {
     var mapping;
     var jsRev = configs.jsRev + 'rev-manifest.json';
     var cssRev = configs.cssRev + 'rev-manifest.json';
@@ -392,37 +276,13 @@ gulp.task('htmlrefs', function(cb) {
 
     var refOpt = {
         urlPrefix: configs.cdnRoot,
-        scope: [dist, tmp],
+        scope: [dist],
         mapping: mapping
     };
 
-    var tasks = [];
-
-    if (configs.jsContentRevScope) {
-        var jsRefTask = function(callback) {
-            gulp.src(configs.jsContentRevScope, distOpt)
-                .pipe(htmlrefs(refOpt))
-                .pipe(gulp.dest(dist))
-                .on('end', function() {
-                    callback();
-                });
-        };
-        tasks.push(jsRefTask);
-    }
-
-    var htmlRefTask = function(callback) {
-        gulp.src(dist + '*.html')
-            .pipe(htmlrefs(refOpt))
-            .pipe(gulp.dest(dist))
-            .on('end', function() {
-                callback();
-            });
-    };
-    tasks.push(htmlRefTask);
-
-    async.series(tasks, function(err, result) {
-        cb(err, result);
-    });
+    return gulp.src(dist + '*.html')
+        .pipe(htmlrefs(refOpt))
+        .pipe(gulp.dest(dist));
 });
 
 gulp.task('minifyHtml', function() {
@@ -443,10 +303,10 @@ gulp.task('noop', function(cb) {
 //         .pipe(savefile());
 // });
 
-// alloydist intergration task, build files to public folder
+// jb.oa.com intergration task, build files to public folder
 // html -> public/webserver/**
 // cdn -> public/cdn/**
-gulp.task('alloydist:prepare', function(cb) {
+gulp.task('jb:prepare', function(cb) {
     var deployGroup = [{
         target: deploy + 'cdn/' + configs.subMoudle,
         include: globCdn
@@ -471,7 +331,7 @@ gulp.task('alloydist:prepare', function(cb) {
 });
 
 // prepare files to package to offline zip for alloykit
-gulp.task('offline:prepare', function(cb) {
+gulp.task('ak:prepare', function(cb) {
     var q = _.map(configs.zipConf, function(item) {
         return function(callback) {
             var urlObj = url.parse(item.target);
@@ -490,7 +350,7 @@ gulp.task('offline:prepare', function(cb) {
 });
 
 // package .offline -> offline.zip for alloykit
-gulp.task('offline:zip', function() {
+gulp.task('ak:zip', ['ak:prepare'], function() {
     return gulp.src('**/*.*', {
             cwd: offlineCache
         })
@@ -519,7 +379,7 @@ gulp.task('testenv', function() {
 gulp.task('ars', function() {
     // publish ars
     request.post('http://jb.oa.com/dist/api/ars', {
-        form: apiData
+        form: data
     }, function(err, resp, body) {
         var data = JSON.parse(body);
         console.log(data);
@@ -530,7 +390,7 @@ gulp.task('ars', function() {
 gulp.task('offline', function(cb) {
     // publish offline zip
     request.post('http://jb.oa.com/dist/api/offline', {
-        form: apiData
+        form: data
     }, function(err, resp, body) {
         var data = JSON.parse(body);
         console.log(data);
@@ -550,21 +410,20 @@ gulp.task('watch', function() {
     gulp.watch(things2copy, opt, ['copy']);
     gulp.watch(image2copy, opt, ['img-rev']);
     gulp.watch(scss2compile, opt, ['compass']);
-    gulp.watch(js2concat, opt, ['concat']);
+    gulp.watch(js2webpack, ['webpack']);
+    gulp.watch(tpl2webpack, ['webpack']);
 });
 
 gulp.task('dev', function(cb) {
-    runSequence(['clean', 'watch:set'], ['copy', 'img-rev', 'compass'], ['concat', 'jsrefs'], 'watch', cb);
+    runSequence(['clean', 'watch:set'], ['copy', 'img-rev', 'compass', 'webpack'], 'watch', cb);
 });
 
 gulp.task('dist', function(cb) {
     runSequence(
-        'clean', ['copy', 'img-rev', 'compass'],
-        'concat', ['tpl-clean', 'concat-clean'], ['uglify', 'minifyCss'],
+        'clean', ['copy', 'img-rev', 'compass', 'webpack'], ['uglify', 'minifyCss'],
         'htmlrefs',
         customMinify,
-        customAkFlow,
-        'clean-dist',
+        customJBFlow,
         cb);
 });
 

@@ -12,8 +12,8 @@
  */
 
 //first we'll define the folders where the sprites are and their layouts
-$icons:sprite-map("icons/*.png", $layout:smart);
- $icons-2x:sprite-map("icons/*.png", $layout:smart);
+$icons:sprite-map("sprite/icons/*.png", $layout:smart);
+$icons-2x:sprite-map("sprite/icons@2x/*.png", $layout:smart);
 //Sprite mixin, works perfectly with standard defines
 @mixin icons-sprite-retina($sprite) {
     background-image: sprite-url($icons);
