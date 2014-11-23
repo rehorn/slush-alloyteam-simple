@@ -7,33 +7,20 @@ module.exports = {
     webServer: '<%= webServer %>',
     // 子模块名称
     subMoudle: '<%= subMoudle %>/',
-    // 模板相关
-    tpl: [{
-        target: 'tpl/index.js',
-        include: [
-            'tpl/index/*.html'
-        ]
-    }],
-    // 合并相关
-    concat: [{
-        target: 'js/index.js',
-        include: [
-            'js/common/config.js',
-            'js/common/global.js',
-            'tpl/index.js',
-            'js/index/*.js'
-        ]
-    }, {
-        target: 'js/inline.js',
-        include: [
-            'js/common/config.js',
-            'js/index/*.js'
-        ],
-        inline: 1 // 是否用于inline，是则在dist中不生成实体合并文件，直接inline
-    }],
-    jsContentRevScope: '',
+    // webpack: js 模块化相关
+    webpack: {
+        entry: {
+            index: './src/js/index/index.js'
+        },
+        output: {
+            filename: '[name].js',
+        },
+        externals: {
+            jQuery: "jQuery"
+        }
+    },
     // alloykit 离线相关
-    zipBlacklist: [], // 离线包黑名单
+    zipBlacklist: [],
     // 使用 alloydist 发布离线包
     offline: {
         // 'bid': 128, // alloykit bid, 需要修改
@@ -51,12 +38,11 @@ module.exports = {
         // 'gray': true,
         // 'uins': []
     },
-    // alloydist相关
     // 可选，alloydist发布单号，用于命令行发布
     distId: '',
     opUser: 'alloy-gulp',
     token: 'ASdxseRTSXfiGUIxnuRisTU',
-    // alloydist发布映射设置建议，不需改动
+    // jb 发布映射设置建议，不需改动
     distHtmlDir: '<%= distHtmlDir %>', // html映射
     distCdnDir: '<%= distCdnDir %>' // cdn映射
 };

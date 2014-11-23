@@ -4,6 +4,6 @@ var CONFIG = {
 
 var PATH = {
     js: {
-        'location4': _urlrev('js/libs/location4.js')
+        'location4': 'js/libs/location4.js'
     }
 };
