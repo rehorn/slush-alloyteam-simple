@@ -1,9 +1,9 @@
 {
     "name": "slush-alloyteam-simple",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "description": "Alloyteam Simple Web Apps generator base on slush & glup",
     "keywords": [
-        "slushgenerator", "gulp", "web", "app", "front-end", "node", "alloytam"
+        "slushgenerator", "gulp", "web", "app", "front-end", "node", "alloyteam", "simple"
     ],
     "homepage": "https://github.com/rehorn/slush-alloyteam-simple",
     "bugs": "https://github.com/rehorn/slush-alloyteam-simple/issues",
@@ -18,8 +18,8 @@
         "templates"
     ],
     "engines": {
-        "node": ">= 0.10.26",
-        "npm": ">=1.4.3"
+        "node": ">= 0.8.0",
+        "npm": ">=1.0.0"
     },
     "dependencies": {
         "gulp": "^3.8.6",
