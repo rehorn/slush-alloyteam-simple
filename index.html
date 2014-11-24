@@ -4,9 +4,9 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -32,14 +32,14 @@
 
         <section id="main_content">
           <h1>
-<a name="slush-alloyteam-simple" class="anchor" href="#slush-alloyteam-simple"><span class="octicon octicon-link"></span></a>slush-alloyteam-simple</h1>
+<a id="slush-alloyteam-simple" class="anchor" href="#slush-alloyteam-simple" aria-hidden="true"><span class="octicon octicon-link"></span></a>slush-alloyteam-simple</h1>
 
 <p>Alloyteam Simple Web Apps generator base on slush &amp; glup </p>
 
 <p>Alloyteam web 前端项目工程化模板</p>
 
 <h3>
-<a name="%E7%89%B9%E6%80%A7" class="anchor" href="#%E7%89%B9%E6%80%A7"><span class="octicon octicon-link"></span></a>特性</h3>
+<a id="特性" class="anchor" href="#%E7%89%B9%E6%80%A7" aria-hidden="true"><span class="octicon octicon-link"></span></a>特性</h3>
 
 <ol>
 <li>基于 gulp 进行构建，方便快捷，易于定制和插件支持</li>
@@ -47,14 +47,16 @@
 <li>所有资源使用增量发布策略，文件名全部 md5 版本化，让产品轻松支持多版本并存</li>
 <li>[css] 使用 compass 编写模块化、可维护 css</li>
 <li>[css] 使用 compass 自动 sprite 生成精灵图，自动生成版本化图片 (无需修改时间戳)</li>
-<li>[js] 支持多种模块化策略，普通文件合并concat/requirejs/browserify</li>
-<li>[js] 内置 js 模板引擎支持，jstemplate，发布前编译</li>
+<li>[js] 支持多种模块化策略，使用 webpack 进行 cmd/amd 模块化打包</li>
+<li>[js] 内置 handlebar 模板引擎支持，发布前编译</li>
 <li>[html] 自动替换 html 内部资源引用路径，替换为 cdn/md5 版本化路径</li>
 <li>[html] 轻松支持 js/css 资源内嵌到页面</li>
-<li>[工程化集成] 生成资源（alloykit离线包、web资源），对接内部发布系统 alloydist</li>
-<li>[工程化集成] 通过 task 调用 alloydist 提供 rest 借口，轻松实现命令行部署测试环境、正式环境、离线包发布等</li>
-</ol><h3>
-<a name="%E4%BE%9D%E8%B5%96" class="anchor" href="#%E4%BE%9D%E8%B5%96"><span class="octicon octicon-link"></span></a>依赖</h3>
+<li>[工程化集成] 生成资源（ak离线包、web资源），对接内部发布系统 jb.oa.com</li>
+<li>[工程化集成] 通过 task 调用 jb.oa.com 提供 rest api 接口，轻松实现命令行部署测试环境、正式环境、离线包发布等</li>
+</ol>
+
+<h3>
+<a id="依赖" class="anchor" href="#%E4%BE%9D%E8%B5%96" aria-hidden="true"><span class="octicon octicon-link"></span></a>依赖</h3>
 
 <ol>
 <li>
@@ -64,48 +66,438 @@
 <li>
 <a href="https://github.com/gulpjs/gulp/">gulp</a> &amp; <a href="https://github.com/slushjs/slush">slush</a>
 </li>
-</ol><h3>
-<a name="%E5%AE%89%E8%A3%85" class="anchor" href="#%E5%AE%89%E8%A3%85"><span class="octicon octicon-link"></span></a>安装</h3>
+</ol>
+
+<h3>
+<a id="安装" class="anchor" href="#%E5%AE%89%E8%A3%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>安装</h3>
 
 <ul>
 <li>安装 ruby，参考 <a href="https://www.ruby-lang.org/en/installation/">https://www.ruby-lang.org/en/installation/</a>
 </li>
-<li>安装 compass</li>
-</ul><pre lang="shell"><code>gem install compass
-</code></pre>
+<li>建议安装 compass preview 版本</li>
+</ul>
+
+<div class="highlight highlight-shell"><pre>gem install compass --pre</pre></div>
 
 <ul>
 <li>安装 nodejs，参考 <a href="http://nodejs.org/">http://nodejs.org/</a>
 </li>
 <li>安装 gulp slush slush-alloyteam-simple</li>
-</ul><pre lang="shell"><code>npm install -g gulp slush slush-alloyteam-simple
-</code></pre>
+</ul>
+
+<div class="highlight highlight-shell"><pre>npm install -g gulp slush slush-alloyteam-simple</pre></div>
 
 <ul>
 <li>创建项目目录</li>
-</ul><pre lang="shell"><code>mkdir alloyteam-webapp
-cd alloyteam-webapp
-</code></pre>
+</ul>
+
+<div class="highlight highlight-shell"><pre>mkdir alloyteam-webapp
+<span class="pl-s3">cd</span> alloyteam-webapp</pre></div>
 
 <ul>
 <li>初始化项目</li>
-</ul><pre lang="shell"><code>slush alloyteam-simple
-</code></pre>
+</ul>
+
+<div class="highlight highlight-shell"><pre>slush alloyteam-simple</pre></div>
 
 <ul>
-<li>安装依赖</li>
-</ul><pre lang="shell"><code>npm install
-</code></pre>
+<li>按照提示填写项目初始化信息</li>
+</ul>
+
+<div class="highlight highlight-shell"><pre>项目名称，如：alloyteam-webapp
+项目html路径，如：http://find.qq.com/qqun/search/
+项目cdn路径，如：http://s.url.cn/qqun/qqfind/search/
+子项目(可留空)，如：qiqi_1111</pre></div>
+
+<ul>
+<li>[可选] 确定 jb.oa.com 是否有对应部署映射，多个子项目的映射可以公用，如各种运营活动，activity/qiqi_1111</li>
+</ul>
+
+<div class="highlight highlight-shell"><pre>项目路径 与 jb 映射对应关系
+http://find.qq.com/qqun/search/  <span class="pl-k">&lt;</span>=<span class="pl-k">&gt;</span> /data/sites/find.qq.com/qqun/search/ 
+http://s.url.cn/qqun/qqfind/search/  <span class="pl-k">&lt;</span>=<span class="pl-k">&gt;</span> /data/sites/cdn.qplus.com/qqun/search/</pre></div>
+
+<ul>
+<li>安装构建依赖</li>
+</ul>
+
+<div class="highlight highlight-shell"><pre>npm install</pre></div>
 
 <ul>
 <li>启动开发任务</li>
-</ul><pre lang="shell"><code>gulp dev
-</code></pre>
+</ul>
+
+<div class="highlight highlight-shell"><pre>gulp</pre></div>
 
 <ul>
 <li>启动正常发布编译任务</li>
-</ul><pre lang="shell"><code>gulp dist
+</ul>
+
+<div class="highlight highlight-shell"><pre>gulp dist</pre></div>
+
+<h3>
+<a id="目录约定" class="anchor" href="#%E7%9B%AE%E5%BD%95%E7%BA%A6%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>目录约定</h3>
+
+<ul>
+<li>根目录</li>
+</ul>
+
+<div class="highlight highlight-shell"><pre>./alloyteam-simple-app/
+├── README.md
+├── config.rb  -- sass 配置文件，不需修改
+├── dist  -- 开发编译目录，开发时将资源替换到这里
+├── gulpfile.js  -- gulp 构建文件，不需修改，版本升级，只需下载最新覆盖
+├── node_modules
+├── package.json
+├── project.js -- 全局配置
+├── src   -- 源代码目录
+└── userdef.js  -- jb.oa.com 发布系统集成配置文件</pre></div>
+
+<ul>
+<li>源代码目录</li>
+</ul>
+
+<div class="highlight highlight-shell"><pre>./src
+├── css  -- sass 样式目录，不需要编译生成 .css 文件的子模块，请使用 _ 开头
+│   ├── common   -- 公共样式
+│   │   ├── _level.scss  -- 自动 sprite 合并图片示范
+│   │   ├── _reset.scss  -- reset css 公共模块
+│   │   └── _ricons.scss  -- retina 高清 sprite 合并图片示范
+│   ├── index  -- index 页面样式子模块，可以将 index 所需样式进行子模块划分，便于管理
+│   │   └── _index.scss
+│   └── index.scss  -- index 样式，合并所有 index 页面样式子模块，公共模块，合图...
+├── favicon.ico
+├── img  -- 图片目录
+│   ├── common  -- 不需合图的图片，文件会自动在文件名加上md5，filename-md5.png
+│   │   ├── banner.png  -- 自动生成 banner-be70f3b1.png
+│   ├── sprite  -- 需要合图的图片，安装生成 sprite 图片名进行目录划分，可以自己新建子目录
+│   │   ├── icons  -- 普清图，最终合并生成 icons-sbb41937c32.png
+│   │   ├── icons@2x -- 2x高清图，生成 icons@2x-sb721890e87.png
+│   │   └── level -- 普清图，生成 level-s99b1a493c7.png
+│   └── static  -- 不需合图的图片，不需自动md5重命名的图片
+│       ├── static-img-url.png
+├── index.html  -- 首页
+├── js  -- js 目录，使用 cmd require 规范进行模块之间应用
+│   ├── common -- 公共模块
+│   │   ├── config.js
+│   │   └── global.js
+│   ├── index  -- 首页 js 模块
+│   │   └── index.js
+│   └── libs  -- 第三方 js 库，会被复制到 dist 目录，js/css 文件名 md5 化
+│       └── jquery
+├── libs  -- 第三方库，libs 所有文件会被复制到 dist 目录，js/css 文件名 md5 化
+│   └── bootstrap
+│       ├── bootstrap.css
+│       └── bootstrap.js
+└── tpl  -- handlebar 模板文件
+    ├── common  -- 公共模板页面片
+    │   ├── footer.hbs
+    │   └── header.hbs
+    └── index  -- 首页模板
+        └── list.hbs</pre></div>
+
+<h3>
+<a id="如何新建一个页面如下mypage-为需要创建的页面名称" class="anchor" href="#%E5%A6%82%E4%BD%95%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AA%E9%A1%B5%E9%9D%A2%E5%A6%82%E4%B8%8Bmypage-%E4%B8%BA%E9%9C%80%E8%A6%81%E5%88%9B%E5%BB%BA%E7%9A%84%E9%A1%B5%E9%9D%A2%E5%90%8D%E7%A7%B0" aria-hidden="true"><span class="octicon octicon-link"></span></a>如何新建一个页面，如下：mypage 为需要创建的页面名称</h3>
+
+<pre><code>slush alloyteam-simple:page mypage
 </code></pre>
+
+<p>将会生成如下目录和文件</p>
+
+<pre><code>./src
+├── mypage.html 
+├── css
+│   ├── mypage
+│   │   └── _index.scss
+│   └── mypage.scss
+├── js
+│   ├── mypage
+│   │   └── index.js
+├── tpl
+│   ├── mypage
+│   │   └── index.hbs
+</code></pre>
+
+<p>修改 project.js 中的 webpack entry 项目，添加对应的 js 编译项</p>
+
+<pre><code>entry: {
+    index: './src/js/index/index.js',
+    mypage: './src/js/mypage/index.js'
+},
+</code></pre>
+
+<h3>
+<a id="如何新建一个-sprite-自动合图如下mysprite-为需要创建的-sprite-名称" class="anchor" href="#%E5%A6%82%E4%BD%95%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AA-sprite-%E8%87%AA%E5%8A%A8%E5%90%88%E5%9B%BE%E5%A6%82%E4%B8%8Bmysprite-%E4%B8%BA%E9%9C%80%E8%A6%81%E5%88%9B%E5%BB%BA%E7%9A%84-sprite-%E5%90%8D%E7%A7%B0" aria-hidden="true"><span class="octicon octicon-link"></span></a>如何新建一个 sprite 自动合图，如下：mysprite 为需要创建的 sprite 名称</h3>
+
+<pre><code># 生成精灵图，方式一：自动生成合图样式，参考下面【关于 css】说明
+slush alloyteam-simple:autosprite mysprite
+# 生成精灵图，方式二：使用 include 引用合图样式
+slush alloyteam-simple:sprite mysprite
+# 生成高清精灵图
+slush alloyteam-simple:retina mysprite
+</code></pre>
+
+<p>将会生成如下目录和文件</p>
+
+<pre><code>./src
+├── css
+│   ├── common
+│   │   └── _mysprite.scss
+├── img
+│   ├── mysprite
+</code></pre>
+
+<h4>
+<a id="如何开始编码" class="anchor" href="#%E5%A6%82%E4%BD%95%E5%BC%80%E5%A7%8B%E7%BC%96%E7%A0%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>如何开始编码</h4>
+
+<p>启动开发命令</p>
+
+<div class="highlight highlight-shell"><pre>gulp dev</pre></div>
+
+<h4>
+<a id="关于-css" class="anchor" href="#%E5%85%B3%E4%BA%8E-css" aria-hidden="true"><span class="octicon octicon-link"></span></a>关于 css</h4>
+
+<ul>
+<li>使用 sass 进行 css 编写，有利于模块化，可复用</li>
+<li>利用 compass 提供了便捷的自动合图，只支持 png</li>
+</ul>
+
+<h5>
+<a id="如何进行自动合图方式一自动生成合图样式" class="anchor" href="#%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E8%87%AA%E5%8A%A8%E5%90%88%E5%9B%BE%E6%96%B9%E5%BC%8F%E4%B8%80%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E5%90%88%E5%9B%BE%E6%A0%B7%E5%BC%8F" aria-hidden="true"><span class="octicon octicon-link"></span></a>如何进行自动合图，方式一：自动生成合图样式</h5>
+
+<ul>
+<li>在 src/img/sprite 下新建目录，名称为 sprite 名称，如QQ等级，level</li>
+<li>将需要合图的图片放到 img/sprite/level 下，如 search.png 和 webqq.png</li>
+<li>在 src/css/common 下新建文件，_level.scss (ps: 将文件内容中 level 替换为自己的 sprite 名称)</li>
+</ul>
+
+<pre><code>$level-layout:smart;
+@import"sprite/level/*.png";
+@include all-level-sprites;
+</code></pre>
+
+<p>上面的代码将自动生成如下代码</p>
+
+<pre><code>.level-search, .level-sprite, .level-webqq {
+    background-image: url(../img/sprite/level-s99b1a493c7.png);
+    background-repeat: no-repeat
+}
+.level-search {
+    background-position: 0 0
+}
+.level-webqq {
+    background-position: 0 -24px
+}
+</code></pre>
+
+<ul>
+<li>将对应的 css 样式规则加在 html 页面或 hbs 模板中</li>
+</ul>
+
+<pre><code>&lt;span class='level-search'&gt;&lt;/span&gt;
+</code></pre>
+
+<h5>
+<a id="如何进行自动合图方式二使用-include-引用合图样式" class="anchor" href="#%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E8%87%AA%E5%8A%A8%E5%90%88%E5%9B%BE%E6%96%B9%E5%BC%8F%E4%BA%8C%E4%BD%BF%E7%94%A8-include-%E5%BC%95%E7%94%A8%E5%90%88%E5%9B%BE%E6%A0%B7%E5%BC%8F" aria-hidden="true"><span class="octicon octicon-link"></span></a>如何进行自动合图，方式二：使用 include 引用合图样式</h5>
+
+<ul>
+<li>在 src/img/sprite 下新建目录，名称为 sprite 名称，如QQ等级，level</li>
+<li>将需要合图的图片放到 img/sprite/level 下，如 search.png 和 webqq.png</li>
+<li>在 src/css/common 下新建文件，_level.scss (ps: 将文件内容中 level 替换为自己的 sprite 名称)</li>
+</ul>
+
+<pre><code>$level-layout:smart;
+@import"sprite/level/*.png";
+</code></pre>
+
+<ul>
+<li>在需要引用小图标的地方，使用 <a href="https://github.com/include" class="user-mention">@include</a> {合图名称}-sprite("图标名称") 的方式引用</li>
+</ul>
+
+<pre><code>@import"common/level";
+.hello {
+    &amp;:before {
+        @include level-sprite("search");
+    }
+}
+</code></pre>
+
+<p>上面的代码将自动生成如下代码</p>
+
+<pre><code>.hello:before {
+    background-image: url(../img/sprite/level-s99b1a493c7.png);
+    background-repeat: no-repeat
+}
+.hello:before {
+    background-position: 0 0
+}
+</code></pre>
+
+<h5>
+<a id="如何让合图支持-retina-高清屏" class="anchor" href="#%E5%A6%82%E4%BD%95%E8%AE%A9%E5%90%88%E5%9B%BE%E6%94%AF%E6%8C%81-retina-%E9%AB%98%E6%B8%85%E5%B1%8F" aria-hidden="true"><span class="octicon octicon-link"></span></a>如何让合图支持 retina 高清屏</h5>
+
+<ul>
+<li>大致过程参考上文 【如何进行自动合图，方式二】</li>
+<li>在 src/img/sprite 下新建目录，名称为 sprite 名称，如QQ等级，level</li>
+<li>分别在 src/img/sprite/level，src/img/sprite/level@2x 下面放普通图标和2x高清图</li>
+<li>在 src/css/common 下新建文件，_level.scss (ps: 将文件内容中 level 替换为自己的 sprite 名称)</li>
+</ul>
+
+<pre><code>$level:sprite-map("sprite/level/*.png", $layout:smart);
+$level-2x:sprite-map("sprite/level@2x/*.png", $layout:smart);
+@mixin level-sprite-retina($sprite) {
+    background-image: sprite-url($level);
+    background-position: sprite-position($level, $sprite);
+    background-repeat: no-repeat;
+    overflow: hidden;
+    display: block;
+    height: image-height(sprite-file($level, $sprite));
+    width: image-width(sprite-file($level, $sprite));
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        background-image: sprite-url($level-2x);
+        background-size: (image-width(sprite-path($level-2x)) / 2) (image-height(sprite-path($level-2x)) / 2);
+        background-position: round(nth(sprite-position($level-2x, $sprite), 1) / 2) round(nth(sprite-position($level-2x, $sprite), 2) / 2);
+        height: image-height(sprite-file($level-2x, $sprite)) / 2;
+        width: image-width(sprite-file($level-2x, $sprite)) / 2;
+    }
+}
+</code></pre>
+
+<ul>
+<li>在需要引用小图标的地方，使用 <a href="https://github.com/include" class="user-mention">@include</a> {合图名称}-retina-sprite("图标名称") 的方式引用</li>
+</ul>
+
+<pre><code>@import"common/level";
+.hello {
+    &amp;:before {
+        @include level-retina-sprite("search");
+    }
+}
+</code></pre>
+
+<h4>
+<a id="关于-js" class="anchor" href="#%E5%85%B3%E4%BA%8E-js" aria-hidden="true"><span class="octicon octicon-link"></span></a>关于 js</h4>
+
+<ul>
+<li>利用 webpack 进行 cmd 模块打包</li>
+<li>在 js 中直接使用 require 即可，全部使用相对路径</li>
+</ul>
+
+<pre><code>// ./src/js/index/index.js
+require('../common/global.js');
+require('../common/config.js');
+console.log('index is loaded');
+</code></pre>
+
+<ul>
+<li>在 js 中引用 handlebar 模板文件</li>
+</ul>
+
+<pre><code>// ./src/js/index/index.js
+var listTpl = require('../../tpl/index/list.hbs');
+var data = {
+    body: 'this is body',
+    title: 'hi title'
+};
+var dom = listTpl(data);
+</code></pre>
+
+<ul>
+<li>在 js 中引用 src/img/common 下图片</li>
+</ul>
+
+<pre><code>var banner = require('../../img/common/banner.png');
+// will change to: "http://s.url.cn/qqun/img/common/banner-be70f3b1.png"
+</code></pre>
+
+<ul>
+<li>在 js 中引用 src/img/static 下图片</li>
+</ul>
+
+<pre><code>var staticImg = require('../../img/static/static-img-url.png');
+// will change to: "http://s.url.cn/qqun/img/static/static-img-url.png"
+</code></pre>
+
+<ul>
+<li>在 js 中引用第三方库，如 jQuery
+修改 project.js 配置，在 webpack 配置中添加 jQuery: "jQuery" (window.jQuery 可访问，其他库类似)</li>
+</ul>
+
+<pre><code>externals: {
+    jQuery: "jQuery"
+}
+</code></pre>
+
+<p>在 js 中直接添加引用</p>
+
+<pre><code>var jQuery = require('jQuery');
+</code></pre>
+
+<p>在 html 中添加 jquery 引用</p>
+
+<pre><code>&lt;script src="js/libs/jquery/jquery.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<ul>
+<li>独立打包公共库，共享代码，避免不同页面 js 重复打包
+修改 project.js 配置，添加公共库入口 common</li>
+</ul>
+
+<pre><code>entry: {
+    commons: './src/js/common/index.js',
+    index: './src/js/index/index.js',
+    mypage: './src/js/mypage/index.js'
+},
+</code></pre>
+
+<p>在 common/index.js 中暴露一个全局变量 window.commons </p>
+
+<pre><code>// src/js/common/index.js
+window.commons = {
+    sub1: require('./sub1.js'),
+    sub2: require('./sub2.js')
+};
+</code></pre>
+
+<p>按照第三方类库的方式，引入 commons</p>
+
+<pre><code>externals: {
+    commons: "commons"
+}
+</code></pre>
+
+<p>在 js 中直接添加引用</p>
+
+<pre><code>var commons = require('commons');
+</code></pre>
+
+<p>在 html 中添加 commons 引用</p>
+
+<pre><code>&lt;script src="js/commons.js"&gt;&lt;/script&gt;
+&lt;script src="js/mypage.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<ul>
+<li>异步远程加载 js
+待续</li>
+</ul>
+
+<h3>
+<a id="关于-handlebar-模板文件" class="anchor" href="#%E5%85%B3%E4%BA%8E-handlebar-%E6%A8%A1%E6%9D%BF%E6%96%87%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>关于 handlebar 模板文件</h3>
+
+<ul>
+<li>语法参考: <a href="http://handlebarsjs.com/">http://handlebarsjs.com/</a><br>
+</li>
+<li><a href="https://github.com/altano/handlebars-loader">https://github.com/altano/handlebars-loader</a></li>
+</ul>
+
+<h3>
+<a id="关于-html-文件" class="anchor" href="#%E5%85%B3%E4%BA%8E-html-%E6%96%87%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>关于 html 文件</h3>
+
+<h3>
+<a id="关于-liveproxy-开发代理" class="anchor" href="#%E5%85%B3%E4%BA%8E-liveproxy-%E5%BC%80%E5%8F%91%E4%BB%A3%E7%90%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>关于 liveproxy 开发代理</h3>
+
+<p>待续</p>
         </section>
 
         <footer>
