@@ -27,7 +27,7 @@ Alloyteam web 前端项目工程化模板
 * 安装 ruby，参考 https://www.ruby-lang.org/en/installation/
 * 建议安装 compass preview 版本
 ```shell
-gem install compass --pre
+gem install compass -v 1.0.1
 ```
 * 安装 nodejs，参考 http://nodejs.org/
 * 安装 gulp slush slush-alloyteam-simple
