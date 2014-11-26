@@ -17,7 +17,6 @@
 // =================
 var gulp = require('gulp');
 var runSequence = require('run-sequence');
-var md5 = require('MD5');
 
 var fs = require('fs');
 var path = require('path');
@@ -29,7 +28,6 @@ var del = require('del');
 var vinylPaths = require('vinyl-paths');
 
 var compass = require('gulp-compass'),
-    rename = require('gulp-rename'),
     rev = require('gulp-rev'),
     uglify = require('gulp-uglify'),
     minifyCss = require('gulp-minify-css'),
@@ -204,11 +202,7 @@ gulp.task('img-rev', function() {
     // img root 
     return gulp.src(image2copy, opt)
         .pipe(newer(dist))
-        .pipe(rename(function(_path) {
-            // md5 rename
-            var fullpath = path.join(src, _path.dirname, _path.basename + _path.extname);
-            _path.basename += '-' + md5(fs.readFileSync(fullpath)).slice(0, 8)
-        }))
+        .pipe(rev())
         .pipe(gulp.dest(dist));
 });
 
@@ -239,7 +233,7 @@ gulp.task('webpack', function() {
 // minify js and generate reversion files
 // stand alone cmd to make sure all js minified
 // known bug: htmlrefs 在 rev 走后，可能会不准
-gulp.task('uglify', function() {
+gulp.task('uglify', 'webpack', function() {
     return gulp.src(dist + '/**/*.js')
         .pipe(uglify())
         .pipe(vinylPaths(del))
@@ -251,7 +245,7 @@ gulp.task('uglify', function() {
 
 // minify css and generate reversion files
 // stand alone cmd to make sure all css minified
-gulp.task('minifyCss', function() {
+gulp.task('minifyCss', ['compass'], function() {
     return gulp.src(dist + '/**/*.css')
         .pipe(minifyCss())
         .pipe(vinylPaths(del))
@@ -420,7 +414,7 @@ gulp.task('dev', function(cb) {
 
 gulp.task('dist', function(cb) {
     runSequence(
-        'clean', ['copy', 'img-rev', 'compass', 'webpack'], ['uglify', 'minifyCss'],
+        'clean', ['copy', 'img-rev', 'compass', 'webpack', 'uglify', 'minifyCss'],
         'htmlrefs',
         customMinify,
         customJBFlow,
