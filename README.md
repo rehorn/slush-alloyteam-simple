@@ -92,8 +92,8 @@ gulp dist
 │   │   ├── _reset.scss  -- reset css 公共模块
 │   │   └── _ricons.scss  -- retina 高清 sprite 合并图片示范
 │   ├── index  -- index 页面样式子模块，可以将 index 所需样式进行子模块划分，便于管理
-│   │   └── _index.scss
-│   └── index.scss  -- index 样式，合并所有 index 页面样式子模块，公共模块，合图...
+│   │   └── _submodule.scss  -- 子模块，以下划线开头
+│   │   └── index.scss  -- 合并所有 index 页面样式子模块，公共模块，合图...
 ├── favicon.ico
 ├── img  -- 图片目录
 │   ├── common  -- 不需合图的图片，文件会自动在文件名加上md5，filename-md5.png
