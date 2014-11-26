@@ -90,15 +90,8 @@ gulp.task('page', function(done) {
     gulp.src(__dirname + 'components/page/index.js')
         .pipe(gulp.dest('./src/js/' + pageName + '/'));
 
-    gulp.src(__dirname + 'components/page/_index.scss')
-        .pipe(gulp.dest('./src/css/' + pageName + '/'));
-
     gulp.src(__dirname + 'components/page/index.scss')
-        .pipe(template(data))
-        .pipe(rename(function(file) {
-            file.basename = file.basename.replace('index', pageName);
-        }))
-        .pipe(gulp.dest('./src/css/'));
+        .pipe(gulp.dest('./src/css/' + pageName + '/'));
 
     gulp.src(__dirname + 'components/page/index.hbs')
         .pipe(gulp.dest('./src/tpl/' + pageName + '/'));
@@ -175,7 +168,7 @@ gulp.task('retina', function(done) {
     gulp.src(__dirname + 'components/sprite/icon.png')
         .pipe(gulp.dest('./src/img/sprite/' + spriteName + '/'));
 
-        gulp.src(__dirname + 'components/sprite/icon.png')
+    gulp.src(__dirname + 'components/sprite/icon.png')
         .pipe(gulp.dest('./src/img/sprite/' + spriteName + '@2x/'));
 
     done();
