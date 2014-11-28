@@ -80,20 +80,20 @@ gulp.task('page', function(done) {
     var data = {
         pageName: pageName
     };
-    gulp.src(__dirname + '/widgets/page/index.html')
+    gulp.src(__dirname + '/components/page/index.html')
         .pipe(template(data))
         .pipe(rename(function(file) {
             file.basename = file.basename.replace('index', pageName);
         }))
         .pipe(gulp.dest('./src'));
 
-    gulp.src(__dirname + '/widgets/page/index.js')
+    gulp.src(__dirname + '/components/page/index.js')
         .pipe(gulp.dest('./src/js/' + pageName + '/'));
 
-    gulp.src(__dirname + '/widgets/page/index.scss')
+    gulp.src(__dirname + '/components/page/index.scss')
         .pipe(gulp.dest('./src/css/' + pageName + '/'));
 
-    gulp.src(__dirname + '/widgets/page/index.hbs')
+    gulp.src(__dirname + '/components/page/index.hbs')
         .pipe(gulp.dest('./src/tpl/' + pageName + '/'));
 
     done();
@@ -110,14 +110,14 @@ gulp.task('autosprite', function(done) {
     var data = {
         spriteName: spriteName
     };
-    gulp.src(__dirname + '/widgets/sprite/autosprite.scss')
+    gulp.src(__dirname + '/components/sprite/autosprite.scss')
         .pipe(template(data))
         .pipe(rename(function(file) {
             file.basename = file.basename.replace('autosprite', '_' + spriteName);
         }))
         .pipe(gulp.dest('./src/css/common'));
 
-    gulp.src(__dirname + '/widgets/sprite/icon.png')
+    gulp.src(__dirname + '/components/sprite/icon.png')
         .pipe(gulp.dest('./src/img/sprite/' + spriteName + '/'));
 
     done();
@@ -134,14 +134,14 @@ gulp.task('sprite', function(done) {
     var data = {
         spriteName: spriteName
     };
-    gulp.src(__dirname + '/widgets/sprite/sprite.scss')
+    gulp.src(__dirname + '/components/sprite/sprite.scss')
         .pipe(template(data))
         .pipe(rename(function(file) {
             file.basename = file.basename.replace('sprite', '_' + spriteName);
         }))
         .pipe(gulp.dest('./src/css/common'));
 
-    gulp.src(__dirname + '/widgets/sprite/icon.png')
+    gulp.src(__dirname + '/components/sprite/icon.png')
         .pipe(gulp.dest('./src/img/sprite/' + spriteName + '/'));
 
     done();
@@ -158,17 +158,17 @@ gulp.task('retina', function(done) {
     var data = {
         spriteName: spriteName
     };
-    gulp.src(__dirname + '/widgets/sprite/retina.scss')
+    gulp.src(__dirname + '/components/sprite/retina.scss')
         .pipe(template(data))
         .pipe(rename(function(file) {
             file.basename = file.basename.replace('retina', '_' + spriteName);
         }))
         .pipe(gulp.dest('./src/css/common'));
 
-    gulp.src(__dirname + '/widgets/sprite/icon.png')
+    gulp.src(__dirname + '/components/sprite/icon.png')
         .pipe(gulp.dest('./src/img/sprite/' + spriteName + '/'));
 
-    gulp.src(__dirname + '/widgets/sprite/icon.png')
+    gulp.src(__dirname + '/components/sprite/icon.png')
         .pipe(gulp.dest('./src/img/sprite/' + spriteName + '@2x/'));
 
     done();
