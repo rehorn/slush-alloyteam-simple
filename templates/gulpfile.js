@@ -233,7 +233,7 @@ gulp.task('webpack', function() {
 // minify js and generate reversion files
 // stand alone cmd to make sure all js minified
 // known bug: htmlrefs 在 rev 走后，可能会不准
-gulp.task('uglify', 'webpack', function() {
+gulp.task('uglify', ['webpack'], function() {
     return gulp.src(dist + '/**/*.js')
         .pipe(uglify())
         .pipe(vinylPaths(del))
