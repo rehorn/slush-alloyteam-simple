@@ -1,6 +1,6 @@
 {
     "name": "slush-alloyteam-simple",
-    "version": "0.5.3",
+    "version": "0.5.4",
     "description": "Alloyteam Simple Web Apps generator base on slush & glup",
     "keywords": [
         "slushgenerator", "gulp", "web", "app", "front-end", "node", "alloyteam", "simple"
