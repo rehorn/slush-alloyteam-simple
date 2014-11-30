@@ -1,7 +1,7 @@
 // =================
 // alloyteam simple project build gulpfile
 // author: rehornchen@tencent.com
-// version: 0.3.17
+// version: 0.5.8
 // created: 2014-07-15
 // history:
 // 0.5.0 2014-11-24 refact: js modular with webpack
@@ -86,25 +86,9 @@ var _configs = {
     jsRev: './.tmp/.jsrev/',
 };
 
-var webpackLoader = {
-    module: {
-        loaders: [{
-            test: /\.hbs$/,
-            loader: "handlebars-loader"
-        }, {
-            test: /common\/.*\.(png|jpg)$/,
-            loader: "file2?name=" + configs.cdn + "img/common/" + "[name]-[hash:8].[ext]"
-        }, {
-            test: /static\/.*\.(png|jpg)$/,
-            loader: "file2?name=" + configs.cdn + "img/static/" + "[name].[ext]"
-        }]
-    }
-};
-
 // overwrite configs
 _.extend(configs, _configs, require('./project') || {});
-// set webpack module loader
-configs.webpack.module = webpackLoader.module;
+
 // overwrite user define value
 if (fs.existsSync('./userdef.js')) {
     _.extend(configs, require('./userdef') || {});
@@ -133,6 +117,7 @@ var distOpt = {
 
 // dev watch mode
 var isWatching = false;
+var isWebpackInit = false;
 
 // set default alloykit offline zip config
 var globCdn = ['**/*.*', '!**/*.{html,ico}'];
@@ -157,6 +142,48 @@ if (configs.zip && _.isEmpty(configs.zipConf)) {
         });
     }
 }
+
+function initWebpackConfig() {
+    var _cdn = isWatching ? '' : configs.cdn;
+    var _webpack = {
+        output: {
+            // entry point dist file name
+            filename: '[name].js',
+            // aysnc loading chunk file root
+            publicPath: 'js/',
+            chunkFilename: 'chunk-[id]-[hash:8].js'
+        }
+    };
+    if (isWatching) {
+        configs.webpack.devtool = '#inline-source-map';
+    } else {
+        configs.webpack.output.publicPath = configs.cdn + _webpack.output.publicPath;
+    }
+
+    _webpack.module = {
+        loaders: [{
+            test: /\.hbs$/,
+            loader: 'handlebars-loader'
+        }, {
+            test: /common\/.*\.(png|jpg)$/,
+            loader: 'file2?name=' + _cdn + 'img/common/' + '[name]-[hash:8].[ext]'
+        }, {
+            test: /static\/.*\.(png|jpg)$/,
+            loader: 'file2?name=' + _cdn + 'img/static/' + '[name].[ext]'
+        }, {
+            test: /\.css$/,
+            loader: 'style/url!file?name=chunk-[name]-[hash:8].[ext]'
+        }]
+    };
+
+    // set webpack module loader
+    configs.webpack.module = configs.webpack.module || {};
+    configs.webpack.module.loaders = configs.webpack.module.loaders || [];
+    configs.webpack.module.loaders = _webpack.module.loaders.concat(configs.webpack.module.loaders);
+    // set webpack output
+    configs.webpack.output = _webpack.output;
+
+};
 
 var customMinify = ['noop'];
 var customJBFlow = ['noop'];
@@ -189,7 +216,7 @@ gulp.task('cleanall', function(cb) {
 });
 
 // copy js/html from src->dist
-var things2copy = ['*.{html,ico}', 'libs/**/*.*', 'js/*.js', 'js/libs/**/*.js', 'img/static/**/' + configs.imgType];
+var things2copy = ['*.{html,ico}', 'libs/**/*.*', 'js/*.js', 'img/static/**/' + configs.imgType];
 gulp.task('copy', function() {
     return gulp.src(things2copy, opt)
         .pipe(newer(dist))
@@ -225,6 +252,7 @@ gulp.task('compass', function() {
 var js2webpack = src + 'js/**/*.js';
 var tpl2webpack = src + 'tpl/**/*.*';
 gulp.task('webpack', function() {
+    !isWebpackInit && initWebpackConfig();
     return gulp.src(js2webpack)
         .pipe(webpack(configs.webpack))
         .pipe(gulp.dest(dist + 'js/'));
@@ -232,9 +260,8 @@ gulp.task('webpack', function() {
 
 // minify js and generate reversion files
 // stand alone cmd to make sure all js minified
-// known bug: htmlrefs 在 rev 走后，可能会不准
 gulp.task('uglify', ['webpack'], function() {
-    return gulp.src(dist + '/**/*.js')
+    return gulp.src(['{' + dist + ',tmp}/**/*.js', '!' + dist + 'js/chunk-*.js'])
         .pipe(uglify())
         .pipe(vinylPaths(del))
         .pipe(rev())
@@ -246,7 +273,7 @@ gulp.task('uglify', ['webpack'], function() {
 // minify css and generate reversion files
 // stand alone cmd to make sure all css minified
 gulp.task('minifyCss', ['compass'], function() {
-    return gulp.src(dist + '/**/*.css')
+    return gulp.src(['{' + dist + ',tmp}/**/*.css', '!' + dist + 'js/chunk-*.css'])
         .pipe(minifyCss())
         .pipe(vinylPaths(del))
         .pipe(rev())
