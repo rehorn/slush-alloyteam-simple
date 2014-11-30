@@ -9,12 +9,12 @@ module.exports = {
     subMoudle: '<%= subMoudle %>/',
     // webpack: js 模块化相关
     webpack: {
+        // 页面所引用 js 配置
         entry: {
+            // 格式=> js名字: '入口路径', 在html 中引用 <script src='js/[js名字].js'></script>
             index: './src/js/index/index.js'
         },
-        output: {
-            filename: '[name].js',
-        },
+        // 第三方库
         externals: {
             jQuery: "jQuery"
         }

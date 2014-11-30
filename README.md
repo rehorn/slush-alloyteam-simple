@@ -273,6 +273,20 @@ $level-2x:sprite-map("sprite/level@2x/*.png", $layout:smart);
 ```
 
 #### 关于 js
+* 在 html 中添加 js 引用
+```
+# 先在 project.js 中 webpack.entry 里面添加 js 引用入口
+webpack: {
+    // 页面所引用 js 配置
+    entry: {
+        // 格式=> [js名字]: '入口路径'
+        index: './src/js/index/index.js'
+    }
+}
+# 在 html 中引用 <script src='js/[js名字].js'></script>
+<script src="js/index.js"></script>
+```
+
 * 利用 webpack 进行 cmd 模块打包
 * 在 js 中直接使用 require 即可，全部使用相对路径
 ```
@@ -281,6 +295,7 @@ require('../common/global.js');
 require('../common/config.js');
 console.log('index is loaded');
 ```
+
 * 在 js 中引用 handlebar 模板文件
 ```
 // ./src/js/index/index.js
@@ -291,6 +306,7 @@ var data = {
 };
 var dom = listTpl(data);
 ```
+
 * 在 js 中引用 src/img/common 下图片
 ```
 var banner = require('../../img/common/banner.png');
@@ -353,14 +369,19 @@ var commons = require('commons');
 ```
 
 * 异步远程加载 js
-待续
+```
+// aync loading files
+require(['./submod1.js', './submod2.js'], function(submod1, submod2) {
+    console.log('submod loaded');
+});
+```
 
 ### 关于 handlebar 模板文件
 * 语法参考: http://handlebarsjs.com/  
 * https://github.com/altano/handlebars-loader
 
 ### 关于 html 文件
-
+* 引用 css 文件
 
 ### 关于 liveproxy 开发代理
 待续
