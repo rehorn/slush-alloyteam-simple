@@ -51,8 +51,7 @@ var configs = {
     subMoudle: '/',
 
     // liveproxy
-    port: 6800,
-    rules: [],
+    liveproxy: 1,
 
     // 图片格式
     // imgType: '*.{jpg,jpeg,png,bmp,gif,ttf,ico,htc}',
@@ -421,9 +420,11 @@ gulp.task('offline', function(cb) {
 
 // support local replacement & livereload
 gulp.task('liveproxy', function(cb) {
-    liveproxy({
-        config: './liveproxy.js'
-    });
+    if (configs.liveproxy) {
+        liveproxy({
+            config: './livefile.js'
+        });
+    }
     cb();
 });
 
