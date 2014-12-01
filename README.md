@@ -77,6 +77,7 @@ gulp dist
 ├── config.rb  -- sass 配置文件，不需修改
 ├── dist  -- 开发编译目录，开发时将资源替换到这里
 ├── gulpfile.js  -- gulp 构建文件，不需修改，版本升级，只需下载最新覆盖
+├── livefile.js  -- liveproxy 配置文件，用于本地开发代理
 ├── node_modules
 ├── package.json
 ├── project.js -- 全局配置
@@ -171,6 +172,20 @@ slush alloyteam-simple:retina mysprite
 │   ├── mysprite
 ```
 
+#### project.js 配置说明
+```
+待续
+```
+
+#### livefile.js 配置说明
+```
+待续
+```
+
+#### userdef.js 配置说明
+```
+待续
+```
 
 #### 如何开始编码
 启动开发命令
@@ -267,8 +282,15 @@ $level-2x:sprite-map("sprite/level@2x/*.png", $layout:smart);
 @import"common/level";
 .hello {
     &:before {
-        @include level-retina-sprite("search");
+        @include level-sprite-retina("search");
     }
+}
+```
+
+##### 如何将图片资源内嵌到 css 中，使用 inline-image 方法
+```
+.hello {
+    background-image: inline-image("banner");
 }
 ```
 
@@ -381,7 +403,67 @@ require(['./submod1.js', './submod2.js'], function(submod1, submod2) {
 * https://github.com/altano/handlebars-loader
 
 ### 关于 html 文件
+使用 gulp-htmlrefs 对 html 进行路径替换和内嵌
 * 引用 css 文件
+```
+<link rel="stylesheet" href="css/index.css">
+```
+将被替换为 cdn+md5 文件格式，如
+```
+<link rel="stylesheet" href="http://s.url.cn/qqfind/css/index-2e3a4b5c.css">
+```
+* 引用 js 文件
+```
+<script src="js/index.js"></script>
+```
+将被替换为 cdn+md5 文件格式，如
+```
+<script src="http://s.url.cn/qqfind/js/index-2e3a4b5c.js"></script>
+```
+* gulp-htmlrefs 默认会自动扫描 link/scirpt/img 三种标签并自动替换
+* 需要额外替换 video/source/data-main/meta/a/input 等标签，需要插入额外标签
+```
+<!-- build:htmlrefs -->
+<meta ....>
+<!-- endbuild -->
+```
+* 将 js/css 内嵌到 html 中
+```
+<script src="js/index.js__inline"></script>
+```
 
 ### 关于 liveproxy 开发代理
-待续
+启动开发任务后，将自动启动一个开发代理，支持如下特性：
+- 本地替换
+- cgi 模拟
+- 脚本注入
+- host 配置
+- 正向透明代理远程资源（本地不存在的文件）
+- 自动刷新页面 livereload
+- 远程调试控制台 jsconsole
+详细参考：https://github.com/rehorn/liveproxy
+
+### 腾讯内部发布平台 jb.oa.com 整合
+* 配置单号
+```
+# project.js
+distId: 'R000012'
+```
+
+* 部署到测试环境
+```
+gulp test
+```
+
+提交一个ars发布单
+```
+gulp ars
+```
+
+提交一个离线包发布
+```
+gulp ak
+```
+
+
+
