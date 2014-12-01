@@ -1,7 +1,7 @@
 // =================
 // alloyteam simple project build gulpfile
 // author: rehornchen@tencent.com
-// version: 0.5.8
+// version: 0.5.10
 // created: 2014-07-15
 // history:
 // 0.5.0 2014-11-24 refact: js modular with webpack
@@ -26,6 +26,7 @@ var async = require('async');
 var request = require('request');
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
+var liveproxy = require('liveproxy');
 
 var compass = require('gulp-compass'),
     rev = require('gulp-rev'),
@@ -146,14 +147,16 @@ if (configs.zip && _.isEmpty(configs.zipConf)) {
 function initWebpackConfig() {
     var _cdn = isWatching ? '' : configs.cdn;
     var _webpack = {
+        // cache: false,
         output: {
             // entry point dist file name
             filename: '[name].js',
             // aysnc loading chunk file root
             publicPath: 'js/',
-            chunkFilename: 'chunk-[id]-[hash:8].js'
+            chunkFilename: isWatching ? 'chunk-[id].js' : 'chunk-[id]-[hash:8].js'
         }
     };
+    _.extend(configs.webpack, _webpack);
     if (isWatching) {
         configs.webpack.devtool = '#inline-source-map';
     } else {
@@ -172,17 +175,15 @@ function initWebpackConfig() {
             loader: 'file2?name=' + _cdn + 'img/static/' + '[name].[ext]'
         }, {
             test: /\.css$/,
-            loader: 'style/url!file?name=chunk-[name]-[hash:8].[ext]'
+            loader: isWatching ? 'style/url!file?name=chunk-[name].[ext]' : 'style/url!file?name=chunk-[name]-[hash:8].[ext]'
         }]
     };
 
     // set webpack module loader
     configs.webpack.module = configs.webpack.module || {};
-    configs.webpack.module.loaders = configs.webpack.module.loaders || [];
-    configs.webpack.module.loaders = _webpack.module.loaders.concat(configs.webpack.module.loaders);
-    // set webpack output
-    configs.webpack.output = _webpack.output;
+    configs.webpack.module.loaders = _webpack.module.loaders;
 
+    isWebpackInit = true;
 };
 
 var customMinify = ['noop'];
@@ -419,8 +420,11 @@ gulp.task('offline', function(cb) {
 });
 
 // support local replacement & livereload
-gulp.task('liveproxy', function() {
-
+gulp.task('liveproxy', function(cb) {
+    liveproxy({
+        config: './liveproxy.js'
+    });
+    cb();
 });
 
 gulp.task('watch:set', function() {
@@ -436,7 +440,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('dev', function(cb) {
-    runSequence(['clean', 'watch:set'], ['copy', 'img-rev', 'compass', 'webpack'], 'watch', cb);
+    runSequence(['clean', 'watch:set'], ['copy', 'img-rev', 'compass', 'webpack'], 'watch', 'liveproxy', cb);
 });
 
 gulp.task('dist', function(cb) {

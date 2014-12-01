@@ -36,7 +36,8 @@
         "style-loader": "^0.8.2",
         "request": "^2.44.1",
         "run-sequence": "^1.0.2",
-        "vinyl-paths": "^1.0.0"
+        "vinyl-paths": "^1.0.0",
+        "liveproxy": "^0.1.2"
     },
     "devDependencies": {},
     "engines": {
