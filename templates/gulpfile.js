@@ -386,7 +386,7 @@ var apiData = {
     opUser: configs.opUser,
     token: configs.token
 };
-// alloydist -> deloy test env
+// jb.oa.com -> deloy test env
 gulp.task('testenv', function() {
     // test env
     request.post('http://jb.oa.com/dist/api/go', {
@@ -397,7 +397,7 @@ gulp.task('testenv', function() {
     });
 });
 
-// alloydist -> prebuild and create ars publish order
+// jb.oa.com -> prebuild and create ars publish order
 gulp.task('ars', function() {
     // publish ars
     request.post('http://jb.oa.com/dist/api/ars', {
@@ -408,7 +408,7 @@ gulp.task('ars', function() {
     });
 });
 
-// alloydist -> prebuild and auto post offline zip
+// jb.oa.com -> prebuild and auto post offline zip
 gulp.task('offline', function(cb) {
     // publish offline zip
     request.post('http://jb.oa.com/dist/api/offline', {
