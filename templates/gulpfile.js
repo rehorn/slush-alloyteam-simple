@@ -1,9 +1,10 @@
 // =================
 // alloyteam simple project build gulpfile
 // author: rehornchen@tencent.com
-// version: 0.5.10
+// version: 0.6.1
 // created: 2014-07-15
 // history:
+// 0.6.1 2014-12-01 add liveproxy support
 // 0.5.0 2014-11-24 refact: js modular with webpack
 // 0.4.2 2014-10-2 add jsrefs debug support
 // 0.4.1 2014-09-30 add cmd line publish support
