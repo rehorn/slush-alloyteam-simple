@@ -8,12 +8,29 @@ var gulp = require('gulp'),
     url = require('url'),
     inquirer = require('inquirer');
 
+function isUndefined(obj) {
+    return obj === void 0;
+};
+
+function fixUrl(urlString, prefix, endfix) {
+    if (!urlString) return;
+    endfix = isUndefined(endfix) ? true : endfix;
+    prefix = isUndefined(prefix) ? true : prefix;
+    if (prefix) {
+        urlString = urlString.indexOf('http://') < 0 ? 'http://' + urlString : urlString;
+    }
+    if (endfix) {
+        urlString = urlString[urlString.length - 1] == '/' ? urlString : urlString + '/';
+    }
+    return urlString;
+};
+
 gulp.task('default', function(done) {
     gutil.log('slush-alloyteam-simple');
 
     var tplFiles = function(file) {
         var basename = path.basename(file.path);
-        return basename === 'project.js';
+        return (basename === 'project.js') || (basename === 'livefile.js');
     };
 
     inquirer.prompt([{
@@ -30,7 +47,7 @@ gulp.task('default', function(done) {
             message: '项目cdn路径，如: http://s.url.cn/qqun/qqfind/search/ -> '
         }, {
             type: 'input',
-            name: 'subMoudle',
+            name: 'subModule',
             message: '子项目名字(可直接enter留空)，如: 双十一活动子项目 qiqi_1111 -> '
         }, {
             type: 'confirm',
@@ -49,10 +66,24 @@ gulp.task('default', function(done) {
 
             // set cdn default webserver
             answers.cdn = answers.cdn || answers.webServer;
+            answers.subModule = answers.subModule || '';
+
+            // fix url 
+            answers.cdn = fixUrl(answers.cdn);
+            answers.webServer = fixUrl(answers.webServer);
+            answers.subModule = fixUrl(answers.subModule, false, true);
 
             // alloydist mapping setting suggestion
-            answers.distCdnDir = '/data/sites/cdn.qplus.com' + url.parse(answers.cdn).pathname;
-            answers.distHtmlDir = '/data/sites/' + url.parse(answers.webServer).hostname + url.parse(answers.webServer).pathname;
+            var cdnUrlObj = url.parse(answers.cdn);
+            var webUrlObj = url.parse(answers.webServer);
+            answers.distCdnDir = '/data/sites/cdn.qplus.com' + cdnUrlObj.pathname;
+            answers.distHtmlDir = '/data/sites/' + webUrlObj.hostname + webUrlObj.pathname;
+
+            // for livefile.js
+            var webServer = (answers.subModule === '/') ? answers.webServer : answers.webServer + answers.subModule;
+            var cdn = (answers.subModule === '/') ? answers.cdn : answers.cdn + answers.subModule;
+            answers.webServerResolve = webServer.replace('http://', '');
+            answers.cdnResolve = cdn.replace('http://', '');
 
             gulp.src(__dirname + '/templates/**')
                 .pipe(gulpif(tplFiles, template(answers)))
