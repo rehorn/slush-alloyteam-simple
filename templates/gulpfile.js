@@ -48,7 +48,7 @@ var configs = {
     name: 'alloyteam-simple-default',
     cdn: 'http://s.url.cn/qqun/',
     webServer: 'http://find.qq.com/',
-    subMoudle: '/',
+    subModule: '/',
 
     // liveproxy
     liveproxy: 1,
@@ -95,8 +95,8 @@ if (fs.existsSync('./userdef.js')) {
 }
 
 // prepare root with subModule case
-configs.cdnRoot = (configs.subMoudle === '/') ? configs.cdn : configs.cdn + configs.subMoudle;
-configs.webServerRoot = (configs.subMoudle === '/') ? configs.webServer : configs.webServer + configs.subMoudle;
+configs.cdnRoot = (configs.subModule === '/') ? configs.cdn : configs.cdn + configs.subModule;
+configs.webServerRoot = (configs.subModule === '/') ? configs.webServer : configs.webServer + configs.subModule;
 
 // global vars
 var src = configs.src,

@@ -6,7 +6,7 @@ module.exports = {
     // 项目 html 根，对应 alloydist 发布系统的 public/webserver/
     webServer: '<%= webServer %>',
     // 子模块名称
-    subMoudle: '<%= subMoudle %>/',
+    subModule: '<%= subModule %>',
     // webpack: js 模块化相关
     webpack: {
         // 页面所引用 js 配置

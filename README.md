@@ -443,6 +443,19 @@ require(['./submod1.js', './submod2.js'], function(submod1, submod2) {
 - 远程调试控制台 jsconsole
 详细参考：https://github.com/rehorn/liveproxy
 
+##### 使用 liveproxy 进行本地替换开发
+* 将浏览器代理或者系统代理配置为 127.0.0.1:8090 (端口可在 livefile.js 修改)
+* 将 localhost;127.0.0.1 配置不使用代理
+* 在浏览器中打开业务页面，如 http://find.qq.com/index.html
+* 编辑 src 下代码，直接浏览器查看最新页面
+* 编辑 livefile.js 里面 mocker 配置，进行cgi本地模拟
+
+##### 使用 liveproxy 进行移动端远程调试
+* 将手机网络代理设置为 127.0.0.1:8090 
+* 在 pc 浏览器中打开调试控制台页面 http://localhost:8091  (端口可在 livefile.js 修改)
+* 在手机浏览器或者webview中打开页面
+* 手机页面日志将自动输出 pc 端控制台中
+
 ### 腾讯内部发布平台 jb.oa.com 整合
 * 配置单号
 ```
