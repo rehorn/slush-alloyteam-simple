@@ -119,10 +119,16 @@ gulp.task('page', function(done) {
         .pipe(gulp.dest('./src'));
 
     gulp.src(__dirname + '/components/page/index.js')
-        .pipe(gulp.dest('./src/js/' + pageName + '/'));
+        .pipe(rename(function(file) {
+            file.basename = file.basename.replace('index', pageName);
+        }))
+        .pipe(gulp.dest('./src/js/'));
 
     gulp.src(__dirname + '/components/page/index.scss')
-        .pipe(gulp.dest('./src/css/' + pageName + '/'));
+        .pipe(rename(function(file) {
+            file.basename = file.basename.replace('index', pageName);
+        }))
+        .pipe(gulp.dest('./src/css/'));
 
     gulp.src(__dirname + '/components/page/index.hbs')
         .pipe(gulp.dest('./src/tpl/' + pageName + '/'));
