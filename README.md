@@ -429,7 +429,7 @@ require(['./submod1.js', './submod2.js'], function(submod1, submod2) {
 ```
 * 将 js/css 内嵌到 html 中
 ```
-<script src="js/index.js__inline"></script>
+<script src="js/index.js?__inline"></script>
 ```
 
 ### 关于 liveproxy 开发代理
