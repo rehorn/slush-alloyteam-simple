@@ -2,6 +2,7 @@
 // alloyteam simple project build gulpfile
 // author: rehornchen@tencent.com
 // version: 0.6.1
+// last update: 2014-12-02
 // created: 2014-07-15
 // history:
 // 0.6.1 2014-12-01 add liveproxy support
@@ -51,6 +52,21 @@ var configs = {
     webServer: 'http://find.qq.com/',
     subModule: '/',
 
+    // path 相关
+    src: './src/',
+    dist: './dist/',
+    deploy: './public/',
+
+    // 路径配置
+    // css: './css/',
+    // js: './js/',
+    // tpl: './tpl/',
+    // img: './img/',
+    // libs: './libs/',
+
+    // webpack
+    webpack: {},
+
     // liveproxy
     liveproxy: 1,
 
@@ -62,11 +78,25 @@ var configs = {
     minifyHtml: 0,
     minifyImage: 0,
 
-    // webpack
-    webpack: {},
-
     // jb support
     JBSupport: 1,
+    // 使用 jb.oa.com 发布离线包
+    offline: {
+        // 'bid': 128, // alloykit bid, 需要修改
+        // 'publish': true,
+        // 'compatible': 0,
+        // 'qversionfrom': 0,
+        // 'qversionto': 0,
+        // 'platform': [2, 3],
+        // 'loadmode': 2,
+        // 'verifyType': 0,
+        // 'expire_time': 1577836800000,
+        // 'cdn': 'defaultCDN',
+        // 'note': '',
+        // 'frequency': 1,
+        // 'gray': true,
+        // 'uins': []
+    },
     // 是否需要打 zip 包
     zip: 1,
     // zip 包路径配置
@@ -74,21 +104,26 @@ var configs = {
     // zip 名称
     zipName: 'offline.zip',
     // 离线包黑名单 
-    zipBlacklist: []
+    zipBlacklist: [],
+    // jb cli 发布相关,发布单号，用于命令行发布
+    distId: '',
+    opUser: 'alloy-gulp',
+    token: 'ASdxseRTSXfiGUIxnuRisTU'
 };
 
-var _configs = {
-    src: './src/',
-    dist: './dist/',
-    tmp: './.tmp/',
-    deploy: './public/',
+// internal tmp path related
+var _path = {
     offlineCache: './.offline/',
+    tmp: './.tmp/',
     cssRev: './.tmp/.cssrev/',
     jsRev: './.tmp/.jsrev/',
 };
 
 // overwrite configs
-_.extend(configs, _configs, require('./project') || {});
+var projectConfig = require('./project') || {};
+projectConfig.webpack = projectConfig.webpack || {};
+var isWebpackEntry = projectConfig.webpack.entry ? true : false;
+_.extend(configs, _path, projectConfig);
 
 // overwrite user define value
 if (fs.existsSync('./userdef.js')) {
@@ -186,6 +221,28 @@ function initWebpackConfig() {
     isWebpackInit = true;
 };
 
+function setWebpackEntry() {
+    var res = [],
+        entry = {};
+    // user not define entry, auto gen from js/entry folder
+    if (!isWebpackEntry) {
+        var folder = path.join(src, 'js');
+        var files = fs.readdirSync(folder);
+        files.forEach(function(file) {
+            var pathname = path.join(folder, file);
+            var stat = fs.lstatSync(pathname);
+            if (!stat.isDirectory()) {
+                res.push(file);
+            }
+        });
+        _.each(res, function(file) {
+            var name = path.basename(file, '.js');
+            entry[name] = src + 'js/' + file;
+        });
+        configs.webpack.entry = entry;
+    }
+};
+
 var customMinify = ['noop'];
 var customJBFlow = ['noop'];
 if (configs.minifyHtml) {
@@ -217,7 +274,7 @@ gulp.task('cleanall', function(cb) {
 });
 
 // copy js/html from src->dist
-var things2copy = ['*.{html,ico}', 'libs/**/*.*', 'js/*.js', 'img/static/**/' + configs.imgType];
+var things2copy = ['*.{html,ico}', 'libs/**/*.*', 'img/static/**/' + configs.imgType];
 gulp.task('copy', function() {
     return gulp.src(things2copy, opt)
         .pipe(newer(dist))
@@ -241,10 +298,10 @@ gulp.task('compass', function() {
         .pipe(newer(dist))
         .pipe(compass({
             config_file: './config.rb',
-            css: 'dist/css',
-            sass: 'src/css',
-            image: src + 'img/',
-            generated_image: dist + 'img/sprite'
+            css: path.join(dist, 'css'),
+            sass: path.join(src, 'css'),
+            image: path.join(src, 'img'),
+            generated_image: path.join(dist, 'img/sprite')
         }))
         .pipe(gulp.dest(dist));
 });
@@ -254,6 +311,7 @@ var js2webpack = src + 'js/**/*.js';
 var tpl2webpack = src + 'tpl/**/*.*';
 gulp.task('webpack', function() {
     !isWebpackInit && initWebpackConfig();
+    setWebpackEntry();
     return gulp.src(js2webpack)
         .pipe(webpack(configs.webpack))
         .pipe(gulp.dest(dist + 'js/'));

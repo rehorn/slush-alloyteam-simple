@@ -1,8 +1,6 @@
-require('../common/global.js');
-require('../common/config.js');
-var $ = require('jQuery');
+require('./common/global.js');
 
-var list = require('../../tpl/index/list.hbs');
+var list = require('../tpl/index/list.hbs');
 
 var data = {
     body: 'this is body',
