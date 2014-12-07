@@ -23,6 +23,7 @@ var runSequence = require('run-sequence');
 var fs = require('fs');
 var path = require('path');
 var url = require('url');
+var exec = require('child_process').exec;
 var _ = require('lodash');
 var async = require('async');
 var request = require('request');
@@ -243,6 +244,16 @@ function setWebpackEntry() {
     }
 };
 
+function openBrowser(target, callback) {
+    var map, opener;
+    map = {
+        'darwin': 'open',
+        'win32': 'start '
+    };
+    opener = map[process.platform] || 'xdg-open';
+    return exec('' + opener + ' ' + target, callback);
+};
+
 var customMinify = ['noop'];
 var customJBFlow = ['noop'];
 if (configs.minifyHtml) {
@@ -384,8 +395,7 @@ gulp.task('noop', function(cb) {
 // });
 
 // jb.oa.com intergration task, build files to public folder
-// html -> public/webserver/**
-// cdn -> public/cdn/**
+// html -> public/webserver/**  cdn -> public/cdn/**
 gulp.task('jb:prepare', function(cb) {
     var deployGroup = [{
         target: deploy + 'cdn/' + configs.subMoudle,
@@ -438,7 +448,6 @@ gulp.task('ak:zip', ['ak:prepare'], function() {
         .pipe(gulp.dest(deploy + 'offline'));
 });
 
-
 var apiData = {
     did: configs.distId,
     opUser: configs.opUser,
@@ -462,7 +471,14 @@ gulp.task('ars', function() {
         form: data
     }, function(err, resp, body) {
         var data = JSON.parse(body);
-        console.log(data);
+        if (data.code == 0) {
+            var msg = JSON.parse(data.msg);
+            if (!msg.result) {
+                console.log('没有 ars 提单权限，请到 http://ars.sng.local 申请！');
+            } else {
+                openBrowser('http://ars.sng.local/Rel_TestManage.htm?orderid=' + msg.releasetag + '&showend=1');
+            }
+        }
     });
 });
 
