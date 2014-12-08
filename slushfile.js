@@ -13,7 +13,7 @@ function isUndefined(obj) {
 };
 
 function fixUrl(urlString, prefix, endfix) {
-    if (!urlString) return;
+    if (!urlString) return '/';
     endfix = isUndefined(endfix) ? true : endfix;
     prefix = isUndefined(prefix) ? true : prefix;
     if (prefix) {
