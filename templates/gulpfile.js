@@ -398,10 +398,10 @@ gulp.task('noop', function(cb) {
 // html -> public/webserver/**  cdn -> public/cdn/**
 gulp.task('jb:prepare', function(cb) {
     var deployGroup = [{
-        target: deploy + 'cdn/' + configs.subMoudle,
+        target: deploy + 'cdn/' + configs.subModule,
         include: globCdn
     }, {
-        target: deploy + 'webserver/' + configs.subMoudle,
+        target: deploy + 'webserver/' + configs.subModule,
         include: globWebServer
     }];
 
