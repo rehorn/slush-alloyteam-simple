@@ -130,7 +130,7 @@ gulp.task('page', function(done) {
         }))
         .pipe(gulp.dest('./src/css/'));
 
-    gulp.src(__dirname + '/components/page/index.hbs')
+    gulp.src(__dirname + '/components/page/index.jade')
         .pipe(gulp.dest('./src/tpl/' + pageName + '/'));
 
     done();
