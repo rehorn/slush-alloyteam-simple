@@ -1,10 +1,11 @@
 // =================
 // alloyteam simple project build gulpfile
 // author: rehornchen@tencent.com
-// version: 0.6.1
-// last update: 2014-12-02
+// version: 0.7.0
+// last update: 2015-01-11
 // created: 2014-07-15
 // history:
+// 0.7.0 2015-01-11 jade/ejs support, html extend support
 // 0.6.1 2014-12-01 add liveproxy support
 // 0.5.0 2014-11-24 refact: js modular with webpack
 // 0.4.2 2014-10-2 add jsrefs debug support
@@ -41,6 +42,8 @@ var compass = require('gulp-compass'),
     webpack = require('gulp-webpack'),
     htmlrefs = require('gulp-htmlrefs'),
     zip = require('gulp-zip'),
+    extender = require('gulp-html-extend'),
+    gulpIf = require('gulp-if'),
     newer = require('gulp-newer');
 
 // =================
@@ -201,8 +204,11 @@ function initWebpackConfig() {
 
     _webpack.module = {
         loaders: [{
-            test: /\.hbs$/,
-            loader: 'handlebars-loader'
+            test: /\.jade$/,
+            loader: 'jade-loader'
+        }, {
+            test: /\.ejs$/,
+            loader: 'ejs-compiled'
         }, {
             test: /common\/.*\.(png|jpg)$/,
             loader: 'file2?name=' + _cdn + 'img/common/' + '[name]-[hash:8].[ext]'
@@ -289,6 +295,7 @@ var things2copy = ['*.{html,ico}', 'libs/**/*.*', 'img/static/**/' + configs.img
 gulp.task('copy', function() {
     return gulp.src(things2copy, opt)
         .pipe(newer(dist))
+        .pipe(gulpIf('*.html', extender()))
         .pipe(gulp.dest(dist));
 });
 
