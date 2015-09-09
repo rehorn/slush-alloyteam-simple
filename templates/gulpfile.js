@@ -43,6 +43,7 @@ var compass = require('gulp-compass'),
     jsrefs = require('gulp-jsrefs'),
     htmlrefs = require('gulp-htmlrefs'),
     jstemplate = require('gulp-jstemplate-compile'),
+    nodetmpl = require('gulp-node-simple'),    
     zip = require('gulp-zip'),
     newer = require('gulp-newer');
 
@@ -65,6 +66,7 @@ var configs = {
     dist: './dist/',
     tmp: './.tmp/',
     deploy: './public/',
+	nodetpl: './node/tmpl/',
     offlineCache: './.offline/',
     imgType: '*.{jpg,jpeg,png,bmp,gif,ttf,ico,htc}',
     cssRev: './.tmp/.cssrev/',
@@ -142,13 +144,14 @@ _.each(configs.concat, function(item) {
 // set default alloykit offline zip config
 var globCdn = ['**/*.*', '!**/*.{html,ico}'];
 var globWebServer = ['**/*.{html,ico}'];
+var globOffline = [offlineCache+'/*.{html,ico}'];
 if (configs.zip && _.isEmpty(configs.zipConf)) {
     configs.zipConf = [{
-        target: configs.cdnRoot,
+        target: configs.webServerRoot,
         include: globCdn
     }, {
         target: configs.webServerRoot,
-        include: globWebServer
+        include: globOffline
     }];
 
     if (!_.isEmpty(configs.zipBlacklist)) {
@@ -172,6 +175,7 @@ if (configs.minifyImage) {
     // customMinify.push('imagemin');
 }
 if (configs.akSupport) {
+	customAkFlow.push('node');
     customAkFlow.push('alloydist:prepare');
     customAkFlow.push('offline:prepare');
     customAkFlow.push('offline:zip');
@@ -208,7 +212,7 @@ gulp.task('cleanup', function() {
 
 // clean dist temp files
 gulp.task('clean-dist', function() {
-    return doClean([tmp, offlineCache]);
+    return doClean([tmp]);
 });
 
 // copy js/html from src->dist
@@ -217,6 +221,23 @@ gulp.task('copy', function() {
     return gulp.src(things2copy, opt)
         .pipe(newer(dist))
         .pipe(gulp.dest(dist));
+});
+
+
+var node2copy = [];
+if(configs.node){
+    node2copy.push(configs.dist+configs.node.html);
+    node2copy = node2copy.concat(configs.node.tmpl);
+}
+gulp.task('node',function(){
+    return gulp.src(node2copy)
+        .pipe(nodetmpl({
+            bigpip : true,
+            pack : true,
+            commonjs:true,
+            strict : true
+        }))
+        .pipe(gulp.dest(configs.nodetpl));
 });
 
 // copy and rev some images files [filename-md5.png style]
@@ -379,7 +400,7 @@ gulp.task('jsrefs', function() {
 
 // replace html/js/css reference resources to new md5 rev version
 // inline js to html, or base64 to img
-gulp.task('htmlrefs', function(cb) {
+gulp.task('htmlrefs', ['htmlrefsOffline'],function(cb) {
     var mapping;
     var jsRev = configs.jsRev + 'rev-manifest.json';
     var cssRev = configs.cssRev + 'rev-manifest.json';
@@ -424,6 +445,32 @@ gulp.task('htmlrefs', function(cb) {
         cb(err, result);
     });
 });
+
+gulp.task('htmlrefsOffline',function(){
+    var mapping;
+    var jsRev = configs.jsRev + 'rev-manifest.json';
+    var cssRev = configs.cssRev + 'rev-manifest.json';
+    if (fs.existsSync(jsRev) && fs.existsSync(cssRev)) {
+        mapping = _.extend(
+            require(jsRev),
+            require(cssRev)
+        );
+    }
+
+    var urlObj = url.parse(configs.webServerRoot);
+    var target = path.join(offlineCache, urlObj.hostname, urlObj.pathname);
+
+    var refOptOffline = {
+        urlPrefix: configs.webServer,
+        scope: [dist],
+        mapping: mapping
+    };    
+
+    //configs.subModule
+    return gulp.src(dist + '*.html')
+        .pipe(htmlrefs(refOptOffline))
+        .pipe(gulp.dest(target));      
+})
 
 gulp.task('minifyHtml', function() {
     return gulp.src(src + '*.html')
@@ -490,7 +537,7 @@ gulp.task('offline:prepare', function(cb) {
 });
 
 // package .offline -> offline.zip for alloykit
-gulp.task('offline:zip', function() {
+gulp.task('offline:zip', ['offline:prepare'],function() {
     return gulp.src('**/*.*', {
             cwd: offlineCache
         })
@@ -551,10 +598,11 @@ gulp.task('watch', function() {
     gulp.watch(image2copy, opt, ['img-rev']);
     gulp.watch(scss2compile, opt, ['compass']);
     gulp.watch(js2concat, opt, ['concat']);
+	gulp.watch(node2copy, ['node']);
 });
 
 gulp.task('dev', function(cb) {
-    runSequence(['clean', 'watch:set'], ['copy', 'img-rev', 'compass'], ['concat', 'jsrefs'], 'watch', cb);
+    runSequence(['clean', 'watch:set'], ['copy', 'img-rev', 'compass'], ['concat', 'jsrefs','node'], 'watch', cb);
 });
 
 gulp.task('dist', function(cb) {
