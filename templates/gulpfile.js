@@ -321,7 +321,6 @@ gulp.task('compass', function() {
             image: path.join(src, 'img'),
             generated_image: path.join(dist, 'img/sprite')
         }))
-        .pipe(gulp.dest(dist));
 });
 
 // packer js using webpack
