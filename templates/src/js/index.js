@@ -1,6 +1,6 @@
 require('./common/global.js');
 
-var list = require('../tpl/index/list.hbs');
+var list = require('../tpl/index/list.jade');
 
 var data = {
     body: 'this is body',
