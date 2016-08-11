@@ -11,7 +11,7 @@ Alloyteam web 前端项目工程化模板
 3. 所有资源使用增量发布策略，文件名全部 md5 版本化，让产品轻松支持多版本并存
 2. [css] 使用 compass 编写模块化、可维护 css
 2. [css] 使用 compass 自动 sprite 生成精灵图，自动生成版本化图片 (无需修改时间戳)
-3. [js] 支持多种模块化策略，使用 webpack 进行 cmd/amd 模块化打包
+3. [js] 支持多种模块化策略，使用 webpack 进行 cmd/amd 模块化打包，支持 es6
 4. [js] 内置 handlebar 模板引擎支持，发布前编译
 5. [html] 自动替换 html 内部资源引用路径，替换为 cdn/md5 版本化路径
 6. [html] 轻松支持 js/css 资源内嵌到页面

@@ -1,50 +1,54 @@
 {
-    "name": "alloyteam-simple",
-    "version": "0.1.0",
-    "description": "Alloyteam Simple Web Apps - By Slush generator alloyteam-simple",
-    "keywords": [
-        "front-end",
-        "alloyteam",
-        "web",
-        "app"
-    ],
-    "homepage": "https://github.com/alloyteam",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/rehorn/slush-alloyteam-simple.git"
-    },
-    "author": "alloyteam",
-    "devDependencies": {
-        "async": "^0.9.0",
-        "del": "^0.1.3",
-        "lodash": "^2.4.1",
-        "gulp": "^3.8.6",
-        "gulp-if": "^1.2.5",
-        "gulp-compass": "^2.0.3",
-        "gulp-htmlrefs": "^0.3.1",
-        "gulp-minify-css": "^0.3.11",
-        "gulp-minify-html": "^0.1.7",
-        "gulp-newer": "^0.4.0",
-        "gulp-rev": "^2.0.1",
-        "gulp-savefile": "^0.1.1",
-        "gulp-uglify": "^1.0.1",
-        "gulp-webpack": "^1.0.0",
-        "gulp-html-extend": "^0.5.5",
-        "gulp-zip": "^2.0.2",
-        "jade": "^1.7.0",
-        "jade-loader": "^0.7.0",
-        "ejs-compiled-loader": "^0.1.0",
-        "file2-loader": "^0.1.0",
-        "file-loader": "^0.8.1",
-        "style-loader": "^0.8.2",
-        "request": "^2.44.1",
-        "run-sequence": "^1.0.2",
-        "vinyl-paths": "^1.0.0",
-        "liveproxy": "^0.1.4"
-    },
-    "dependencies": {},
-    "engines": {
-        "node": ">=0.10.0",
-        "npm": ">=1.2.10"
-    }
+  "name": "alloyteam-simple",
+  "version": "0.1.1",
+  "description": "Alloyteam Simple Web Apps - By Slush generator alloyteam-simple",
+  "keywords": [
+    "front-end",
+    "alloyteam",
+    "web",
+    "app"
+  ],
+  "homepage": "https://github.com/alloyteam",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rehorn/slush-alloyteam-simple.git"
+  },
+  "author": "alloyteam",
+  "dependencies": {},
+  "devDependencies": {
+    "async": "^2.0.1",
+    "babel-core": "^6.13.2",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-es2015-loose": "^7.0.0",
+    "del": "^2.2.1",
+    "ejs-compiled-loader": "^2.1.1",
+    "file-loader": "^0.9.0",
+    "file2-loader": "^0.1.0",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^2.0.12",
+    "gulp-compass": "^2.1.0",
+    "gulp-html-extend": "^1.1.6",
+    "gulp-htmlrefs": "^0.3.6",
+    "gulp-if": "^2.0.1",
+    "gulp-minify-html": "^1.0.6",
+    "gulp-newer": "^1.2.0",
+    "gulp-rev": "^7.1.0",
+    "gulp-savefile": "^0.1.1",
+    "gulp-uglify": "^2.0.0",
+    "gulp-zip": "^3.2.0",
+    "jade": "^1.11.0",
+    "jade-loader": "^0.8.0",
+    "liveproxy": "^0.1.4",
+    "lodash": "^4.14.2",
+    "request": "^2.74.0",
+    "run-sequence": "^1.2.2",
+    "style-loader": "^0.13.1",
+    "vinyl-paths": "^2.1.0",
+    "webpack-stream": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=0.10.0",
+    "npm": ">=1.2.10"
+  }
 }
